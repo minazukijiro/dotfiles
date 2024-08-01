@@ -47,8 +47,8 @@ dotfiles-commit() {
 	    dotfiles commit -m "$msg" "$f"
 	elif (( $#msg )); then
 	    echo "$msg"
-	else
-	    echo "xy:$xy f:$f"
+	# else
+	#     echo "xy:$xy f:$f"
 	fi
 	shift
     done
