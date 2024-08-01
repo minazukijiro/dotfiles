@@ -59,4 +59,14 @@ dotfiles-force-pull() {
     dotfiles reset --hard origin/main
 }
 
-alias e='emacsclient -t'
+emacs-or-client() {
+    local c=()
+    if emacsclient -e '(server-running-p)' >/dev/null 2>&1; then
+	c+=(emacsclient -t)
+    else
+	c+=(emacs)
+    fi
+    "$c" "$@"
+}
+
+alias e='emacs-or-client'
