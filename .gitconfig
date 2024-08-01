@@ -1,0 +1,7 @@
+[init]
+	defaultBranch = main
+[user]
+	name = ﾀﾅｶ ﾄﾓｱｷ
+	email = minazukijiro@gmail.com
+[push]
+	autoSetupRemote = true
