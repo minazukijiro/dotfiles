@@ -16,22 +16,22 @@ dotfiles-add() {
 }
 
 dotfiles-commit() {
-    local x y f msg commit
+    local v xy f msg commit
+
+    IFS=$'\n'
+    set -- $(dotfiles status -s)
     
-    git --git-dir ~/.dotfiles --work-tree ~ status -s | while read -r line; do
-	x="$line[1]" y="$line[2]" f="$line[4,-1]"
-	if [[ "$x$y" == '??' || "$x$y" == '!!' ]]; then
-	    continue
-	fi
+    while (( $# )); do
+	v="$1"; xy="$v[1,2]" f="$v[4,-1]"
 	msg= commit=0
-	case "$x$y" in
-	    M[' 'MD]  ) commit=0 msg='updated in index' ;;
+	case "$xy" in
+	    M[' 'MD]  ) commit=0 msg="update $f" ;;
 	    A[' 'MD]  ) commit=1 msg="add $f" ;;
 	    D' '      ) commit=0 msg='deleted from index' ;;
 	    R[' 'MD]  ) commit=0 msg='renamed in index' ;;
 	    C[' 'MD]  ) commit=0 msg='copied in index' ;;
 	    [MARC]' ' ) commit=0 msg='index and work tree matches' ;;
-	    [' 'MARC]M) commit=0 msg='work tree changed since index' ;;
+	    [' 'MARC]M) commit=1 msg="update $f" ;;
 	    [' 'MARC]D) commit=0 msg='deleted in work tree' ;;
 	    [' 'D]R   ) commit=0 msg='renamed in work tree' ;;
 	    [' 'D]C   ) commit=0 msg='copied in work tree' ;;
@@ -45,8 +45,18 @@ dotfiles-commit() {
 	esac
 	if (( $commit )); then
 	    dotfiles commit -m "$msg" "$f"
+	elif (( $#msg )); then
+	    echo "$msg"
+	else
+	    echo "xy:$xy f:$f"
 	fi
+	shift
     done
+}
+
+dotfiles-force-pull() {
+    dotfiles fetch
+    dotfiles reset --hard origin/main
 }
 
 alias e='emacsclient -t'
