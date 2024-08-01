@@ -19,7 +19,7 @@ dotfiles-commit() {
     local v xy f msg commit
 
     IFS=$'\n'
-    set -- $(dotfiles status -s)
+    set -- $(dotfiles status -s -uno)
     
     while (( $# )); do
 	v="$1"; xy="$v[1,2]" f="$v[4,-1]"
