@@ -15,9 +15,46 @@ if (( $+commands[tmux] && ! $+TMUX && $+SSH_CONNECTION )); then
     exec tmux new
 fi
 
+ttyctl -f
+
+reset_broken_terminal () {
+    printf '%b' '\e[0m\e(B\e)0\017\e[?5l\e7\e[0;0r\e8'
+}
+
+precmd_functions+=(reset_broken_terminal)
+
+clear-screen-and-scrollback() {
+    printf '\x1Bc'; zle clear-screen
+}
+
+zle -N clear-screen-and-scrollback
+bindkey ^L clear-screen-and-scrollback
+
+autoload -Uz bracketed-paste-magic
+zle -N bracketed-paste bracketed-paste-magic
+zstyle ':bracketed-paste-magic' paste-init backward-extend-paste
+
+autoload -Uz select-word-style
+select-word-style default
+zstyle ':zle:*' word-chars ' -/?=:@'
+zstyle ':zle:*' word-style unspecified
+
 alias relogin='exec $SHELL -l'
 
-mkcd() { install -Dd "$1" && cd "$1" }
+setopt EXTENDED_GLOB
+setopt NULL_GLOB
+
+# command not found
+() {
+    local handler
+    if (( $+commands[pkgfile] )) \
+	   && [[ -s ${handler::=/usr/share/doc/pkgfile/command-not-found.zsh} ]]; then
+	source $handler
+    elif (( $+commands[brew] )) \
+	     && [[ -s ${handler::=${commands[brew]:A:h:h}/Library/Taps/homebrew/homebrew-command-not-found/handler.sh} ]]; then
+	source $handler
+    fi
+}
 
 alias dotfiles='git --git-dir ~/.dotfiles --work-tree ~'
 
@@ -87,6 +124,11 @@ emacs-or-client() {
 
 alias e='emacs-or-client'
 
+mkcd() { install -Dd "$1" && cd "$1" }
+mkcp() { (( $# > 1 )) && install -Dd "$@[-1]" && cp "$@" }
+mkmv() { (( $# > 1 )) && install -Dd "$@[-1]" && mv "$@" }
+
+# znap
 () {
     znapdir=~/.znap znapzsh=~/.znap/znap.zsh
     [[ -r $znapzsh ]] || {
@@ -109,8 +151,18 @@ bindkey  history-substring-search-down
 
 znap source zsh-users/zsh-syntax-highlighting
 
-#znap source sorin-ionescu/prezto modules/{command-not-found,completion,history}
-
 PURE_PROMPT_SYMBOL='›'
 PURE_PROMPT_VICMD_SYMBOL='‹'
 znap prompt sindresorhus/pure
+
+() {
+    local src zwc
+    while (( $# )); do
+	src=$1 zwc=$1.zwc
+	if [[ ! -f $zwc || $src -nt $zwc ]]; then
+	    zcompile $src
+	fi
+	source $src
+	shift
+    done
+} ~/.zshrc.*~*.zwc
