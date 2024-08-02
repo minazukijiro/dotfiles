@@ -2,6 +2,8 @@
 
 [[ $TERM != linux ]] || return 0
 
+# If not working
+# echo 'AcceptEnv TMUX' | sudo tee -a /etc/ssh/sshd_config
 if (( $+commands[tmux] && ! $+TMUX && $+SSH_CONNECTION )); then
     tmux has && exec tmux attach
     exec tmux new
