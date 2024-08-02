@@ -1,5 +1,12 @@
 # -*- mode: shell-script; -*-
-   
+
+[[ $TERM != linux ]] || return 0
+
+if (( $+commands[tmux] && ! $+TMUX && $+SSH_CONNECTION )); then
+    tmux has && exec tmux attach
+    exec tmux new
+fi
+
 alias relogin='exec $SHELL -l'
 
 alias dotfiles='git --git-dir ~/.dotfiles --work-tree ~'
@@ -62,11 +69,38 @@ dotfiles-force-pull() {
 emacs-or-client() {
     local c=()
     if emacsclient -e '(server-running-p)' >/dev/null 2>&1; then
-	c+=(emacsclient -t)
+	emacsclient -t "$@"
     else
-	c+=(emacs)
+	emacs "$@"
     fi
-    "$c" "$@"
 }
 
 alias e='emacs-or-client'
+
+() {
+    znapdir=~/.znap znapzsh=~/.znap/znap.zsh
+    [[ -r $znapzsh ]] || {
+	rm -rf $znapdir
+	git clone --depth 1 https://github.com/marlonrichert/zsh-snap.git $znapdir
+    }
+    source $znapzsh
+    zstyle ':znap:*' repos-dir $znapdir/repos
+}
+
+znap source zsh-users/zaw
+
+znap source zsh-users/zsh-autosuggestions
+
+znap source zsh-users/zsh-completions
+
+znap source zsh-users/zsh-history-substring-search
+bindkey  history-substring-search-up
+bindkey  history-substring-search-down
+
+znap source zsh-users/zsh-syntax-highlighting
+
+znap source sorin-ionescu/prezto modules/{command-not-found,completion,history}
+
+PURE_PROMPT_SYMBOL='›'
+PURE_PROMPT_VICMD_SYMBOL='‹'
+znap prompt sindresorhus/pure
