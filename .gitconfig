@@ -5,3 +5,10 @@
 	email = minazukijiro@gmail.com
 [push]
 	autoSetupRemote = true
+[alias]
+	aliases = config --get-regexp ^alias\\.
+	graph   = log --graph --date=short --decorate=short --pretty=format:'%Cgreen%h %Creset%cd %Cblue%cn %Cred%d %Creset%s'
+	gr      = graph
+	diffw   = diff --word-diff
+[includeIf "gitdir/i:~/vtj/"]
+	path = ~/.gitconfig@vtj
