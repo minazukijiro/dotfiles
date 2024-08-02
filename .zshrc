@@ -1,15 +1,23 @@
 # -*- mode: shell-script; -*-
 
+if (( ${ZPROF:-0} )); then
+    zmodload zsh/zprof; zprof
+fi
+
+HISTFILE=/dev/null
+
 [[ $TERM != linux ]] || return 0
 
 # If not working
-# echo 'AcceptEnv TMUX' | sudo tee -a /etc/ssh/sshd_config
+# echo 'AcceptEnv TMUX' | sudo tee /etc/ssh/sshd_config.d/90-tmux.conf
 if (( $+commands[tmux] && ! $+TMUX && $+SSH_CONNECTION )); then
     tmux has && exec tmux attach
     exec tmux new
 fi
 
 alias relogin='exec $SHELL -l'
+
+mkcd() { install -Dd "$1" && cd "$1" }
 
 alias dotfiles='git --git-dir ~/.dotfiles --work-tree ~'
 
@@ -101,7 +109,7 @@ bindkey  history-substring-search-down
 
 znap source zsh-users/zsh-syntax-highlighting
 
-znap source sorin-ionescu/prezto modules/{command-not-found,completion,history}
+#znap source sorin-ionescu/prezto modules/{command-not-found,completion,history}
 
 PURE_PROMPT_SYMBOL='›'
 PURE_PROMPT_VICMD_SYMBOL='‹'
