@@ -70,19 +70,22 @@ dotfiles-add() {
 }
 
 dotfiles-commit() {
-    local v xy f msg commit
+    local v xy f parts  msg commit
 
     IFS=$'\n'
     set -- $(dotfiles status -s -uno)
     
     while (( $# )); do
-	v="$1"; xy="$v[1,2]" f="$v[4,-1]"
+	v="$1"
+	xy="$v[1,2]"
+	f="$v[4,-1]"
+	parts=(${(@s/ -> /)f})
 	msg= commit=0
 	case "$xy" in
-	    M[' 'MD]  ) commit=0 msg="update $f" ;;
+	    M[' 'MD]  ) commit=1 msg="update $f" ;;
 	    A[' 'MD]  ) commit=1 msg="add $f" ;;
 	    D' '      ) commit=0 msg='deleted from index' ;;
-	    R[' 'MD]  ) commit=0 msg='renamed in index' ;;
+	    R[' 'MD]  ) commit=1 msg="renamed $f" ;;
 	    C[' 'MD]  ) commit=0 msg='copied in index' ;;
 	    [MARC]' ' ) commit=0 msg='index and work tree matches' ;;
 	    [' 'MARC]M) commit=1 msg="update $f" ;;
@@ -98,9 +101,9 @@ dotfiles-commit() {
 	    UU        ) commit=0 msg='unmerged, both modified' ;;
 	esac
 	if (( $commit )); then
-	    dotfiles commit -m "$msg" "$f"
+	    dotfiles commit -m "$msg" "$parts[@]"
 	elif (( $#msg )); then
-	    echo "$msg"
+	    echo dotfiles commit -m "$msg" "$parts[@]"
 	# else
 	#     echo "xy:$xy f:$f"
 	fi
