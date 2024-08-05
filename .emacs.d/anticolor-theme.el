@@ -21,7 +21,8 @@
  '(menu-bar-mode nil)
  '(mode-line-format nil)
  '(scroll-bar-mode nil)
- '(tool-bar-mode nil))
+ ;;'(tool-bar-mode nil)
+ )
 
 (custom-theme-set-faces
  'anticolor
