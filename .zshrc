@@ -8,6 +8,15 @@ HISTFILE=~/.zsh_history
 HISTSIZE=10000
 SAVEHIST=0
 
+typeset -U PATH path
+path=(~/bin(N-/) ~/.local/bin(N-/) $path)
+
+typeset -U CDPATH cdpath
+cdpath=(~)
+
+typeset -U FPATH fpath
+# fpath=(... $fpath)
+
 [[ $TERM != linux ]] || return 0
 
 # If not working
@@ -82,15 +91,17 @@ zshaddhistory_functions+=(my_zshaddhistory)
 () {
     local handler
     if (( $+commands[pkgfile] )) \
-	   && [[ -s ${handler::=/usr/share/doc/pkgfile/command-not-found.zsh} ]]; then
-	source $handler
+           && [[ -s ${handler::=/usr/share/doc/pkgfile/command-not-found.zsh} ]]; then
+        source $handler
     elif (( $+commands[brew] )) \
-	     && [[ -s ${handler::=${commands[brew]:A:h:h}/Library/Taps/homebrew/homebrew-command-not-found/handler.sh} ]]; then
-	source $handler
+             && [[ -s ${handler::=${commands[brew]:A:h:h}/Library/Taps/homebrew/homebrew-command-not-found/handler.sh} ]]; then
+        source $handler
     fi
 }
 
-alias dotfiles='git --git-dir ~/.dotfiles --work-tree ~'
+dotfiles() {
+    git --git-dir ~/.dotfiles --work-tree ~ "$@"
+}
 
 [[ -d ~/.dotfiles ]] || {
     dotfiles init
@@ -110,38 +121,38 @@ dotfiles-commit() {
     set -- $(dotfiles status -s -uno)
 
     while (( $# )); do
-	v="$1"
-	xy="$v[1,2]"
-	f="$v[4,-1]"
-	parts=(${(@s/ -> /)f})
-	msg= commit=0
-	case "$xy" in
-	    M[' 'MD]  ) commit=1 msg="update $f" ;;
-	    A[' 'MD]  ) commit=1 msg="add $f" ;;
-	    D' '      ) commit=0 msg='deleted from index' ;;
-	    R[' 'MD]  ) commit=1 msg="renamed $f" ;;
-	    C[' 'MD]  ) commit=0 msg='copied in index' ;;
-	    [MARC]' ' ) commit=0 msg='index and work tree matches' ;;
-	    [' 'MARC]M) commit=1 msg="update $f" ;;
-	    [' 'MARC]D) commit=0 msg='deleted in work tree' ;;
-	    [' 'D]R   ) commit=0 msg='renamed in work tree' ;;
-	    [' 'D]C   ) commit=0 msg='copied in work tree' ;;
-	    DD        ) commit=0 msg='unmerged, both deleted' ;;
-	    AU        ) commit=0 msg='unmerged, added by us' ;;
-	    UD        ) commit=0 msg='unmerged, deleted by them' ;;
-	    UA        ) commit=0 msg='unmerged, added by them' ;;
-	    DU        ) commit=0 msg='unmerged, deleted by us' ;;
-	    AA        ) commit=0 msg='unmerged, both added' ;;
-	    UU        ) commit=0 msg='unmerged, both modified' ;;
-	esac
-	if (( $commit )); then
-	    dotfiles commit -m "$msg" "$parts[@]"
-	elif (( $#msg )); then
-	    echo dotfiles commit -m "$msg" "$parts[@]"
-	# else
-	#     echo "xy:$xy f:$f"
-	fi
-	shift
+        v="$1"
+        xy="$v[1,2]"
+        f="$v[4,-1]"
+        parts=(${(@s/ -> /)f})
+        msg= commit=0
+        case "$xy" in
+            M[' 'MD]  ) commit=1 msg="update $f" ;;
+            A[' 'MD]  ) commit=1 msg="add $f" ;;
+            D' '      ) commit=0 msg='deleted from index' ;;
+            R[' 'MD]  ) commit=1 msg="renamed $f" ;;
+            C[' 'MD]  ) commit=0 msg='copied in index' ;;
+            [MARC]' ' ) commit=0 msg='index and work tree matches' ;;
+            [' 'MARC]M) commit=1 msg="update $f" ;;
+            [' 'MARC]D) commit=0 msg='deleted in work tree' ;;
+            [' 'D]R   ) commit=0 msg='renamed in work tree' ;;
+            [' 'D]C   ) commit=0 msg='copied in work tree' ;;
+            DD        ) commit=0 msg='unmerged, both deleted' ;;
+            AU        ) commit=0 msg='unmerged, added by us' ;;
+            UD        ) commit=0 msg='unmerged, deleted by them' ;;
+            UA        ) commit=0 msg='unmerged, added by them' ;;
+            DU        ) commit=0 msg='unmerged, deleted by us' ;;
+            AA        ) commit=0 msg='unmerged, both added' ;;
+            UU        ) commit=0 msg='unmerged, both modified' ;;
+        esac
+        if (( $commit )); then
+            dotfiles commit -m "$msg" "$parts[@]"
+        elif (( $#msg )); then
+            echo dotfiles commit -m "$msg" "$parts[@]"
+        # else
+        #     echo "xy:$xy f:$f"
+        fi
+        shift
     done
 }
 
@@ -153,9 +164,9 @@ dotfiles-force-pull() {
 emacs-or-client() {
     local c=()
     if emacsclient -e '(server-running-p)' >/dev/null 2>&1; then
-	emacsclient -t "$@"
+        emacsclient -t "$@"
     else
-	emacs "$@"
+        emacs "$@"
     fi
 }
 
@@ -169,8 +180,8 @@ mkmv() { (( $# > 1 )) && install -Dd "$@[-1]" && mv "$@" }
 () {
     znapdir=~/.znap znapzsh=~/.znap/znap.zsh
     [[ -r $znapzsh ]] || {
-	rm -rf $znapdir
-	git clone --depth 1 https://github.com/marlonrichert/zsh-snap.git $znapdir
+        rm -rf $znapdir
+        git clone --depth 1 https://github.com/marlonrichert/zsh-snap.git $znapdir
     }
     source $znapzsh
     zstyle ':znap:*' repos-dir $znapdir/repos
@@ -195,11 +206,15 @@ znap prompt sindresorhus/pure
 () {
     local src zwc
     while (( $# )); do
-	src=$1 zwc=$1.zwc
-	if [[ ! -f $zwc || $src -nt $zwc ]]; then
-	    zcompile $src
-	fi
-	source $src
-	shift
+        src=$1 zwc=$1.zwc
+        if [[ ! -f $zwc || $src -nt $zwc ]]; then
+            zcompile $src
+        fi
+        source $src
+        shift
     done
 } ~/.zshrc.*~*.zwc
+
+if (( $ZPROF )); then
+    zprof
+fi
