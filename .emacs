@@ -10,7 +10,9 @@
 
 (add-hook 'kill-emacs-hook
           (lambda ()
-            (when (file-exists-p custom-file)
+            (when (and
+                   (boundp 'custom-file)
+                   (file-exists-p custom-file))
               (delete-file custom-file))))
 
 (defvar scratch-buffer-file
@@ -25,9 +27,9 @@
 
 (add-hook 'buffer-kill-hook
           (lambda ()
-    (when (eq ( current-buffer) (get-buffer "*scratch*"))
-      (rename-buffer "*scratch~*")
-      (clone-buffer "*scratch*"))))
+            (when (eq ( current-buffer) (get-buffer "*scratch*"))
+              (rename-buffer "*scratch~*")
+              (clone-buffer "*scratch*"))))
 
 (add-hook 'kill-emacs-hook
           (lambda ()
@@ -35,15 +37,21 @@
               (write-region (point-min) (point-max) scratch-buffer-file nil t))))
 
 (custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
  '(find-file-visit-truename t)
  '(global-auto-revert-mode t)
  '(indent-tabs-mode nil)
- '(inhibit-splash-screen t)
  '(inhibit-startup-screen t)
  '(initial-scratch-message nil)
  '(make-backup-files t)
+ '(package-selected-packages
+   '(yaml-mode typescript-mode terraform-doc terraform-mode rainbow-mode popwin open-junk-file markdown-mode magit macrostep lua-mode k8s-mode folding flycheck-inline flycheck editorconfig dockerfile-mode ddskk company-nginx company-lua company-go company-terraform company-shell company-c-headers company-statistics company ido-completing-read+ ido-vertical-mode smex imenu-anywhere blackout el-get hydra leaf-keywords leaf))
  '(pop-up-windows nil)
  '(require-final-newline 'visit-save)
+ '(scroll-bar-mode nil)
  '(scroll-step 1)
  '(set-file-name-coding-system 'utf-8)
  '(set-keyboard-coding-system 'utf-8)
@@ -51,7 +59,7 @@
  '(set-terminal-coding-system 'utf-8)
  '(show-paren-mode t)
  '(split-width-threshold 0)
- '(system-time-locale "C"))
+ '(system-time-locale "C" t))
 
 (let ((display-table (or buffer-display-table standard-display-table)))
   (when display-table
@@ -175,9 +183,12 @@
 (leaf open-junk-file
   :preface
   (defun my:open-junk-file-delete-files ()
-    (dolist (x
-             (directory-files my:open-junk-file-directory t "^\\([^.]\\|\\.[^.]\\|\\.\\.\\.)"))
-      (delete-file x)))
+    (when (and
+           (boundp 'my:open-junk-file-directory)
+           (file-directory-p my:open-junk-file-directory))
+      (dolist (x
+               (directory-files my:open-junk-file-directory t "^\\([^.]\\|\\.[^.]\\|\\.\\.\\.)"))
+        (delete-file x))))
   :ensure t
   :bind ("C-c j" . open-junk-file)
   :hook (kill-emacs-hook . my:open-junk-file-delete-files)
@@ -213,3 +224,9 @@
   :global-minor-mode xclip-mode)
 
 (leaf yaml-mode :ensure t)
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
