@@ -10,9 +10,7 @@
 
 (add-hook 'kill-emacs-hook
           (lambda ()
-            (when (and
-                   (boundp 'custom-file)
-                   (file-exists-p custom-file))
+            (when (file-exists-p custom-file)
               (delete-file custom-file))))
 
 (defvar scratch-buffer-file
@@ -37,7 +35,6 @@
               (write-region (point-min) (point-max) scratch-buffer-file nil t))))
 
 (custom-set-variables
- '(custom-file (locate-user-emacs-file "emacs-(emacs-pid).el"))
  '(find-file-visit-truename t)
  '(global-auto-revert-mode t)
  '(indent-tabs-mode nil)
@@ -134,6 +131,21 @@
   (leaf company-nginx :ensure t :config (add-to-list 'company-backends 'company-nginx))
   :global-minor-mode global-company-mode)
 
+(leaf ddskk
+  :ensure t
+  :custom
+  (default-input-method . "japanese-skk")
+  (skk-status-indicator . 'minor-mode)
+  (skk-egg-like-newline . t)
+  (skk-latin-mode-string . "a")
+  (skk-hiragana-mode-string . "あ")
+  (skk-katakana-mode-string . "ア")
+  (skk-jisx0208-latin-mode-string . "Ａ")
+  :config
+  (let ((jisyo (locate-user-emacs-file "jisyo")))
+    (unless (file-directory-p jisyo)
+      (skk-get jisyo))))
+
 (leaf dockerfile-mode :ensure t)
 
 (leaf editorconfig :ensure t)
@@ -163,10 +175,9 @@
 (leaf open-junk-file
   :preface
   (defun my:open-junk-file-delete-files ()
-    (when (file-directory-p my:open-junk-file-directory)
-      (dolist (x
-               (directory-files my:open-junk-file-directory t "^\\([^.]\\|\\.[^.]\\|\\.\\.\\.)"))
-        (delete-file x))))
+    (dolist (x
+             (directory-files my:open-junk-file-directory t "^\\([^.]\\|\\.[^.]\\|\\.\\.\\.)"))
+      (delete-file x)))
   :ensure t
   :bind ("C-c j" . open-junk-file)
   :hook (kill-emacs-hook . my:open-junk-file-delete-files)
