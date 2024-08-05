@@ -59,6 +59,9 @@ magenta = "#ac7bf0"
 cyan    = "#74fdf3"
 white   = "#ffffff"
 
+[selection]
+save_to_clipboard = false
+
 [cursor]
 style = { shape = "Beam", blinking = "Never" }
 
