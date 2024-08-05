@@ -4,7 +4,9 @@ if (( ${ZPROF:-0} )); then
     zmodload zsh/zprof; zprof
 fi
 
-HISTFILE=/dev/null
+HISTFILE=~/.zsh_history
+HISTSIZE=10000
+SAVEHIST=0
 
 [[ $TERM != linux ]] || return 0
 
@@ -44,6 +46,38 @@ alias relogin='exec $SHELL -l'
 setopt EXTENDED_GLOB
 setopt NULL_GLOB
 
+setopt BANG_HIST
+setopt EXTENDED_HISTORY
+setopt HIST_EXPIRE_DUPS_FIRST
+setopt HIST_FIND_NO_DUPS
+setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_IGNORE_DUPS
+setopt HIST_IGNORE_SPACE
+setopt HIST_NO_STORE
+setopt HIST_REDUCE_BLANKS
+setopt HIST_SAVE_NO_DUPS
+setopt HIST_VERIFY
+setopt SHARE_HISTORY
+
+SAVEHIST=$((100000 * 365))
+
+# autoload -Uz up-line-or-beginning-search down-line-or-beginning-search
+# zle -N up-line-or-beginning-search
+# bindkey  up-line-or-beginning-search
+# zle -N down-line-or-beginning-search
+# bindkey  down-line-or-beginning-search
+
+alias history='fc -lDi'
+
+typeset -TUx HISTORY_IGNORE history_ignore '|'
+history_ignore+=('history' 'history *')
+
+my_zshaddhistory() {
+    [[ ${1%%$'\n'} != ${~ZSH_HISTORY_IGNORE} ]]
+}
+
+zshaddhistory_functions+=(my_zshaddhistory)
+
 # command not found
 () {
     local handler
@@ -74,7 +108,7 @@ dotfiles-commit() {
 
     IFS=$'\n'
     set -- $(dotfiles status -s -uno)
-    
+
     while (( $# )); do
 	v="$1"
 	xy="$v[1,2]"
