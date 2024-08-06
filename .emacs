@@ -27,7 +27,7 @@
 
 (add-hook 'buffer-kill-hook
           (lambda ()
-            (when (eq ( current-buffer) (get-buffer "*scratch*"))
+            (when (eq (current-buffer) (get-buffer "*scratch*"))
               (rename-buffer "*scratch~*")
               (clone-buffer "*scratch*"))))
 
@@ -37,18 +37,13 @@
               (write-region (point-min) (point-max) scratch-buffer-file nil t))))
 
 (custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
+ '(custom-file (locate-user-emacs-file (format "emacs-%d.el" (emacs-pid))))
  '(find-file-visit-truename t)
  '(global-auto-revert-mode t)
  '(indent-tabs-mode nil)
  '(inhibit-startup-screen t)
  '(initial-scratch-message nil)
  '(make-backup-files t)
- '(package-selected-packages
-   '(yaml-mode typescript-mode terraform-doc terraform-mode rainbow-mode popwin open-junk-file markdown-mode magit macrostep lua-mode k8s-mode folding flycheck-inline flycheck editorconfig dockerfile-mode ddskk company-nginx company-lua company-go company-terraform company-shell company-c-headers company-statistics company ido-completing-read+ ido-vertical-mode smex imenu-anywhere blackout el-get hydra leaf-keywords leaf))
  '(pop-up-windows nil)
  '(require-final-newline 'visit-save)
  '(scroll-bar-mode nil)
@@ -224,9 +219,3 @@
   :global-minor-mode xclip-mode)
 
 (leaf yaml-mode :ensure t)
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
