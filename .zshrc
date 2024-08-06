@@ -176,6 +176,13 @@ mkcd() { install -Dd "$1" && cd "$1" }
 mkcp() { (( $# > 1 )) && install -Dd "$@[-1]" && cp "$@" }
 mkmv() { (( $# > 1 )) && install -Dd "$@[-1]" && mv "$@" }
 
+if (( $+commands[nnn] )); then
+    export NNN_OPTS='aBdfoS'
+    export NNN_MBS="m:/run/media/$USER;M:$HOME/.config/nnn/mounts"
+    export NNN_PLUG='f:finder'
+    export NNN_FCOLORS='c1e2272e006033f7c6d6abc4'
+fi
+
 # znap
 () {
     znapdir=~/.znap znapzsh=~/.znap/znap.zsh
