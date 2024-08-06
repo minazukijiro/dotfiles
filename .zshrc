@@ -156,7 +156,7 @@ dotfiles-commit() {
     done
 }
 
-dotfiles-force-pull() {
+dotfiles-pull() {
     dotfiles fetch
     dotfiles reset --hard origin/main
 }
@@ -171,6 +171,7 @@ emacs-or-client() {
 }
 
 alias e='emacs-or-client'
+alias emacs='emacs-or-client'
 
 mkcd() { install -Dd "$1" && cd "$1" }
 mkcp() { (( $# > 1 )) && install -Dd "$@[-1]" && cp "$@" }
@@ -194,6 +195,10 @@ fi
     zstyle ':znap:*' repos-dir $znapdir/repos
 }
 
+PURE_PROMPT_SYMBOL='›'
+PURE_PROMPT_VICMD_SYMBOL='‹'
+znap prompt sindresorhus/pure
+
 znap source zsh-users/zaw
 
 znap source zsh-users/zsh-autosuggestions
@@ -206,9 +211,7 @@ bindkey  history-substring-search-down
 
 znap source zsh-users/zsh-syntax-highlighting
 
-PURE_PROMPT_SYMBOL='›'
-PURE_PROMPT_VICMD_SYMBOL='‹'
-znap prompt sindresorhus/pure
+znap source sorin-ionescu/prezto modules/completion
 
 () {
     local src zwc
