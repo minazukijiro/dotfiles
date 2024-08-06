@@ -12,3 +12,6 @@
 	diffw   = diff --word-diff
 [includeIf "gitdir/i:~/vtj/"]
 	path = ~/.gitconfig@vtj
+[status]
+	showUntrackedFiles = no
+	showStash = yes
