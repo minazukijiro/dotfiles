@@ -71,6 +71,7 @@ hide_when_typing = true
 [keyboard]
 bindings = [
   { mods = "control",       key = "T",      chars = "`c"  },
+  { mods = "command",       key = "T",      chars = "`c"  },
   { mods = "control",       key = "Tab",    chars = "`n"  },
   { mods = "control|shift", key = "Tab",    chars = "`p"  },
   { mods = "control",       key = "Return", chars = "`\"" },
