@@ -167,7 +167,7 @@ alias emacs='emacs-or-client'
 
 alias grep='grep --color=auto'
 
-export LESS='-NRS'
+export LESS='-RS'
 
 if (( $+commands[lesspipe.sh] )); then
     export LESSOPEN='|lesspipe.sh %s'
@@ -183,6 +183,12 @@ if (( $+commands[nnn] )); then
     export NNN_OPTS='aBdfoS'
     export NNN_PLUG='f:finder'
     export NNN_FCOLORS='c1e2272e006033f7c6d6abc4'
+
+    if (( $+commands[trash] )); then
+        export NNN_TRASH=1
+    elif (( $+commands[gio] )); then
+        export NNN_TRASH=2
+    fi
 fi
 
 # znap
