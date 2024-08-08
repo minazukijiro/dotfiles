@@ -87,6 +87,10 @@ my_zshaddhistory() {
 
 zshaddhistory_functions+=(my_zshaddhistory)
 
+if (( $+commands[direnv] )); then
+    eval "$(direnv hook zsh)"
+fi
+
 dotfiles() {
     git --git-dir ~/.dotfiles --work-tree ~ "$@"
 }
@@ -194,7 +198,7 @@ fi
 
 PURE_PROMPT_SYMBOL='›'
 PURE_PROMPT_VICMD_SYMBOL='‹'
-znap prompt sindresorhus/pure
+znap prompt minazukijiro/pure
 
 znap source zsh-users/zaw
 
