@@ -14,7 +14,7 @@ path=(~/bin(N-/) ~/.local/bin(N-/) $path)
 typeset -U CDPATH cdpath
 cdpath=(~)
 
-typeset -U FPATH fpath
+# typeset -U FPATH fpath
 # fpath=(... $fpath)
 
 [[ $TERM != linux ]] || return 0
@@ -86,18 +86,6 @@ my_zshaddhistory() {
 }
 
 zshaddhistory_functions+=(my_zshaddhistory)
-
-# command not found
-() {
-    local handler
-    if (( $+commands[pkgfile] )) \
-           && [[ -s ${handler::=/usr/share/doc/pkgfile/command-not-found.zsh} ]]; then
-        source $handler
-    elif (( $+commands[brew] )) \
-             && [[ -s ${handler::=${commands[brew]:A:h:h}/Library/Taps/homebrew/homebrew-command-not-found/handler.sh} ]]; then
-        source $handler
-    fi
-}
 
 dotfiles() {
     git --git-dir ~/.dotfiles --work-tree ~ "$@"
@@ -173,13 +161,22 @@ emacs-or-client() {
 alias e='emacs-or-client'
 alias emacs='emacs-or-client'
 
+alias grep='grep --color=auto'
+
+export LESS='-NRS'
+
+if (( $+commands[lesspipe.sh] )); then
+    export LESSOPEN='|lesspipe.sh %s'
+fi
+
+alias ls='ls -Xv --color=auto --group-directories-first'
+
 mkcd() { install -Dd "$1" && cd "$1" }
 mkcp() { (( $# > 1 )) && install -Dd "$@[-1]" && cp "$@" }
 mkmv() { (( $# > 1 )) && install -Dd "$@[-1]" && mv "$@" }
 
 if (( $+commands[nnn] )); then
     export NNN_OPTS='aBdfoS'
-    export NNN_MBS="m:/run/media/$USER;M:$HOME/.config/nnn/mounts"
     export NNN_PLUG='f:finder'
     export NNN_FCOLORS='c1e2272e006033f7c6d6abc4'
 fi
@@ -211,7 +208,7 @@ bindkey  history-substring-search-down
 
 znap source zsh-users/zsh-syntax-highlighting
 
-znap source sorin-ionescu/prezto modules/completion
+znap source sorin-ionescu/prezto modules/{command-not-found,completion}
 
 () {
     local src zwc
