@@ -167,6 +167,8 @@ alias emacs='emacs-or-client'
 
 alias grep='grep --color=auto'
 
+export GPG_TTY=$(tty)
+
 export LESS='-RS'
 
 if (( $+commands[lesspipe.sh] )); then
@@ -190,6 +192,15 @@ if (( $+commands[nnn] )); then
         export NNN_TRASH=2
     fi
 fi
+
+pgrep -u $USER ssh-agent >/dev/null \
+    || ssh-agent > ~/.ssh-agent-thing
+
+(( $+SSH_AGENT_PID )) \
+    || eval $(< ~/.ssh-agent-thing)
+
+ssh-add -l >/dev/null \
+    || alias ssh='ssh-add -l >/dev/null || ssh-add && unalias ssh; ssh'
 
 # znap
 () {
