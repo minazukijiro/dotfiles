@@ -9,7 +9,7 @@ HISTSIZE=10000
 SAVEHIST=0
 
 typeset -U PATH path
-path=(~/bin(N-/) ~/.local/bin(N-/) $path)
+path=(~/bin(N-/) ~/.local/bin(N-/) ~/.cargo/bin(N-/) $path)
 
 typeset -U CDPATH cdpath
 cdpath=(~)
@@ -88,7 +88,7 @@ my_zshaddhistory() {
 zshaddhistory_functions+=(my_zshaddhistory)
 
 if (( $+commands[direnv] )); then
-    eval "$(direnv hook zsh)"
+    eval "$(direnv hook zsh)" >/dev/null 2>&1
 fi
 
 dotfiles() {
@@ -183,13 +183,17 @@ mkmv() { (( $# > 1 )) && install -Dd "$@[-1]" && mv "$@" }
 
 if (( $+commands[nnn] )); then
     export NNN_OPTS='aBdfoS'
-    export NNN_PLUG='f:finder'
+    export NNN_PLUG='f:finder;e:trash-empty'
     export NNN_FCOLORS='c1e2272e006033f7c6d6abc4'
 
     if (( $+commands[trash-put] )); then
         export NNN_TRASH=1
     elif (( $+commands[gio] )); then
         export NNN_TRASH=2
+    fi
+
+    if [[ ! -f ~/.config/nnn/plugins/getplugs ]]; then
+        curl -fsS https://raw.githubusercontent.com/jarun/nnn/master/plugins/getplugs | zsh
     fi
 fi
 
