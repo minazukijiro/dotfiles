@@ -197,7 +197,10 @@ if (( $+commands[nnn] )); then
     fi
 fi
 
-pgrep -u $USER ssh-agent >/dev/null \
+[[ -f ~/.ssh-agent-thing ]] \
+    || pkill -u $USER ssh-agent >/dev/null 2>&1
+
+pgrep -u $USER ssh-agent >/dev/null 2>&1 \
     || ssh-agent > ~/.ssh-agent-thing
 
 (( $+SSH_AGENT_PID )) \
