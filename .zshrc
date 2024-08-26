@@ -14,8 +14,8 @@ path=(~/bin(N-/) ~/.local/bin(N-/) ~/.cargo/bin(N-/) $path)
 typeset -U CDPATH cdpath
 cdpath=(~)
 
-# typeset -U FPATH fpath
-# fpath=(... $fpath)
+typeset -U FPATH fpath
+fpath=(~/.zsh.d/functions(N-/) $fpath)
 
 [[ $TERM != linux ]] || return 0
 
@@ -204,7 +204,7 @@ pgrep -u $USER ssh-agent >/dev/null 2>&1 \
     || ssh-agent > ~/.ssh-agent-thing
 
 (( $+SSH_AGENT_PID )) \
-    || eval $(< ~/.ssh-agent-thing)
+    || eval $(< ~/.ssh-agent-thing) >/dev/null
 
 ssh-add -l >/dev/null \
     || alias ssh='ssh-add -l >/dev/null || ssh-add && unalias ssh; ssh'
