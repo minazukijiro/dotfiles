@@ -186,12 +186,6 @@ if (( $+commands[nnn] )); then
     export NNN_PLUG='f:finder;e:trash-empty'
     export NNN_FCOLORS='c1e2272e006033f7c6d6abc4'
 
-    if (( $+commands[trash-put] )); then
-        export NNN_TRASH=1
-    elif (( $+commands[gio] )); then
-        export NNN_TRASH=2
-    fi
-
     if [[ ! -f ~/.config/nnn/plugins/getplugs ]]; then
         curl -fsS https://raw.githubusercontent.com/jarun/nnn/master/plugins/getplugs | zsh
     fi
