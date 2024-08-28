@@ -74,5 +74,5 @@ bindings = [
   { mods = "command",       key = "T",      chars = "`c"  },
   { mods = "control",       key = "Tab",    chars = "`n"  },
   { mods = "control|shift", key = "Tab",    chars = "`p"  },
-  { mods = "control",       key = "Return", chars = "`\"" },
+  { mods = "command",       key = "Return", chars = "`\"" },
 ]
