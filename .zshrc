@@ -242,7 +242,7 @@ znap source sorin-ionescu/prezto modules/{command-not-found,completion}
         source $src
         shift
     done
-} ~/.zshrc.*~*.zwc
+} ~/.zshrc.*~*.zwc~*~
 
 if (( $ZPROF )); then
     zprof
