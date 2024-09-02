@@ -189,6 +189,12 @@ if (( $+commands[nnn] )); then
     if [[ ! -f ~/.config/nnn/plugins/getplugs ]]; then
         curl -fsS https://raw.githubusercontent.com/jarun/nnn/master/plugins/getplugs | zsh
     fi
+
+    if (( $+commands[trash-put] )); then
+        export NNN_TRASH=1
+    elif (( $+commands[gio] )); then
+        export NNN_TRASH=2
+    fi
 fi
 
 [[ -f ~/.ssh-agent-thing ]] \
