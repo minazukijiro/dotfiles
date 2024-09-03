@@ -109,6 +109,8 @@ dotfiles-add() {
 dotfiles-commit() {
     local v xy f parts  msg commit
 
+    cd ~
+
     IFS=$'\n'
     set -- $(dotfiles status -s -uno)
 
@@ -192,10 +194,10 @@ if (( $+commands[nnn] )); then
 
     if (( $+commands[trash-put] )); then
         export NNN_TRASH=1
-        nnn() { command nnn; trash-empty -fv; }
+        nnn() { command nnn "$@"; trash-empty -fv; }
     elif (( $+commands[gio] )); then
         export NNN_TRASH=2
-        nnn() { command nnn; gio trash --empty; }
+        nnn() { command nnn "$@"; gio trash --empty; }
     fi
 fi
 
