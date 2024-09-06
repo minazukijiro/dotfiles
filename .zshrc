@@ -109,43 +109,47 @@ dotfiles-add() {
 dotfiles-commit() {
     local v xy f parts  msg commit
 
-    IFS=$'\n'
-    set -- $(dotfiles status -s -uno)
+    (
+        cd ~
 
-    while (( $# )); do
-        v="$1"
-        xy="$v[1,2]"
-        f="$v[4,-1]"
-        parts=(${(@s/ -> /)f})
-        msg= commit=0
-        case "$xy" in
-            M[' 'MD]  ) commit=1 msg="update $f" ;;
-            A[' 'MD]  ) commit=1 msg="add $f" ;;
-            D' '      ) commit=0 msg='deleted from index' ;;
-            R[' 'MD]  ) commit=1 msg="renamed $f" ;;
-            C[' 'MD]  ) commit=0 msg='copied in index' ;;
-            [MARC]' ' ) commit=0 msg='index and work tree matches' ;;
-            [' 'MARC]M) commit=1 msg="update $f" ;;
-            [' 'MARC]D) commit=0 msg='deleted in work tree' ;;
-            [' 'D]R   ) commit=0 msg='renamed in work tree' ;;
-            [' 'D]C   ) commit=0 msg='copied in work tree' ;;
-            DD        ) commit=0 msg='unmerged, both deleted' ;;
-            AU        ) commit=0 msg='unmerged, added by us' ;;
-            UD        ) commit=0 msg='unmerged, deleted by them' ;;
-            UA        ) commit=0 msg='unmerged, added by them' ;;
-            DU        ) commit=0 msg='unmerged, deleted by us' ;;
-            AA        ) commit=0 msg='unmerged, both added' ;;
-            UU        ) commit=0 msg='unmerged, both modified' ;;
-        esac
-        if (( $commit )); then
-            dotfiles commit -m "$msg" "$parts[@]"
-        elif (( $#msg )); then
-            echo dotfiles commit -m "$msg" "$parts[@]"
-        # else
-        #     echo "xy:$xy f:$f"
-        fi
-        shift
-    done
+        IFS=$'\n'
+        set -- $(dotfiles status -s -uno)
+
+        while (( $# )); do
+            v="$1"
+            xy="$v[1,2]"
+            f="$v[4,-1]"
+            parts=(${(@s/ -> /)f})
+            msg= commit=0
+            case "$xy" in
+                M[' 'MD]  ) commit=1 msg="update $f" ;;
+                A[' 'MD]  ) commit=1 msg="add $f" ;;
+                D' '      ) commit=0 msg='deleted from index' ;;
+                R[' 'MD]  ) commit=1 msg="renamed $f" ;;
+                C[' 'MD]  ) commit=0 msg='copied in index' ;;
+                [MARC]' ' ) commit=0 msg='index and work tree matches' ;;
+                [' 'MARC]M) commit=1 msg="update $f" ;;
+                [' 'MARC]D) commit=0 msg='deleted in work tree' ;;
+                [' 'D]R   ) commit=0 msg='renamed in work tree' ;;
+                [' 'D]C   ) commit=0 msg='copied in work tree' ;;
+                DD        ) commit=0 msg='unmerged, both deleted' ;;
+                AU        ) commit=0 msg='unmerged, added by us' ;;
+                UD        ) commit=0 msg='unmerged, deleted by them' ;;
+                UA        ) commit=0 msg='unmerged, added by them' ;;
+                DU        ) commit=0 msg='unmerged, deleted by us' ;;
+                AA        ) commit=0 msg='unmerged, both added' ;;
+                UU        ) commit=0 msg='unmerged, both modified' ;;
+            esac
+            if (( $commit )); then
+                dotfiles commit -m "$msg" "$parts[@]"
+            elif (( $#msg )); then
+                echo dotfiles commit -m "$msg" "$parts[@]"
+                # else
+                #     echo "xy:$xy f:$f"
+            fi
+            shift
+        done
+    )
 }
 
 dotfiles-pull() {
@@ -193,8 +197,10 @@ if (( $+commands[nnn] )); then
 
     if (( $+commands[trash-put] )); then
         export NNN_TRASH=1
+        nnn() { command nnn "$@"; trash-empty -fv; }
     elif (( $+commands[gio] )); then
         export NNN_TRASH=2
+        nnn() { command nnn "$@"; gio trash --empty; }
     fi
 fi
 
