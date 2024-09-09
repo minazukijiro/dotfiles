@@ -137,7 +137,6 @@
   (leaf company-shell :ensure t :config (add-to-list 'company-backends 'company-shell))
   (leaf company-terraform :ensure t :config (add-to-list 'company-backends 'company-terraform))
   (leaf company-go :ensure t :config (add-to-list 'company-backends 'company-go))
-  (leaf company-lua :ensure t :config (add-to-list 'company-backends 'company-lua))
   (leaf company-nginx :ensure t :config (add-to-list 'company-backends 'company-nginx))
   :global-minor-mode global-company-mode)
 
