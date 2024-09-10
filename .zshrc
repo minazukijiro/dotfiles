@@ -160,9 +160,9 @@ dotfiles-pull() {
 emacs-or-client() {
     local c=()
     if emacsclient -e '(server-running-p)' >/dev/null 2>&1; then
-        emacsclient -t "$@"
+        command emacsclient -t "$@"
     else
-        emacs "$@"
+        command emacs "$@"
     fi
 }
 
@@ -202,6 +202,10 @@ if (( $+commands[nnn] )); then
         export NNN_TRASH=2
         nnn() { command nnn "$@"; gio trash --empty; }
     fi
+fi
+
+if (( $+commands[pass] )); then
+    export PASSWORD_STORE_ENABLE_EXTENSIONS=true
 fi
 
 [[ -f ~/.ssh-agent-thing ]] \
