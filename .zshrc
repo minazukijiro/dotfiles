@@ -95,6 +95,11 @@ dotfiles() {
     git --git-dir ~/.dotfiles --work-tree ~ "$@"
 }
 
+autoload -Uz compinit
+compinit
+
+compdef dotfiles=git
+
 [[ -d ~/.dotfiles ]] || {
     dotfiles init
     dotfiles remote add origin git@github.com:minazukijiro/dotfiles.git
