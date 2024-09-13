@@ -1,28 +1,27 @@
 (deftheme anticolor
   "")
 
-(setq header-line-format
-      '("%l,%C  "
-        (:eval
-         (cond
-          ((not (buffer-file-name))
-           (buffer-name))
-          (buffer-read-only
-           (propertize buffer-file-truename 'face 'italic))
-          ((buffer-modified-p)
-           (propertize buffer-file-truename 'face 'bold))
-          (t
-           buffer-file-truename)))
-        skk-modeline-input-mode
-        (:eval
-         (propertize " " 'display `(space :align-to (- right ,(length mode-name)))))
-        mode-name))
-
-(setq mode-line-format nil)
-
-(if (fboundp 'menu-bar-mode) (menu-bar-mode nil))
-(if (fboundp 'tool-bar-mode) (tool-bar-mode nil))
-(if (fboundp 'scroll-bar-mode) (scroll-bar-mode nil))
+(custom-set-variables
+ '(header-line-format
+   '("%l,%C  "
+     (:eval
+      (cond
+       ((not (buffer-file-name))
+        (buffer-name))
+       (buffer-read-only
+        (propertize buffer-file-truename 'face 'italic))
+       ((buffer-modified-p)
+        (propertize buffer-file-truename 'face 'bold))
+       (t
+        buffer-file-truename)))
+     skk-modeline-input-mode
+     (:eval
+      (propertize " " 'display `(space :align-to (- right ,(length mode-name)))))
+     mode-name))
+ '(mode-line-format nil)
+ '(menu-bar-mode nil)
+ '(tool-bar-mode nil)
+ '(scroll-bar-mode nil))
 
 (custom-theme-set-faces
  'anticolor
