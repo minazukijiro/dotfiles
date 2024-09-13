@@ -39,12 +39,13 @@
 (custom-set-variables
  '(custom-file (locate-user-emacs-file (format "emacs-%d.el" (emacs-pid))))
  '(exec-path
-   '("/usr/local/bin"
+   `(,(expand-file-name "~/bin")
+     ,(expand-file-name "~/.asdf/shims")
+     "/usr/local/bin"
      "/usr/bin"
      "/bin"
      "/usr/sbin"
-     "/sbin"
-     "/usr/local/Cellar/emacs/29.4/libexec/emacs/29.4/x86_64-apple-darwin23.4.0"))
+     "/sbin"))
  '(find-file-visit-truename t)
  '(global-auto-revert-mode t)
  '(indent-tabs-mode nil)
