@@ -9,7 +9,7 @@ HISTSIZE=10000
 SAVEHIST=0
 
 typeset -U PATH path
-path=(~/bin(N-/) ~/.local/bin(N-/) ~/.cargo/bin(N-/) $path)
+path=(~/bin(N-/) ~/.local/bin(N-/) $path)
 
 typeset -U CDPATH cdpath
 cdpath=(~)
@@ -244,7 +244,7 @@ znap source zsh-users/zaw
 
 znap source zsh-users/zsh-autosuggestions
 
-znap source zsh-users/zsh-completions
+znap install zsh-users/zsh-completions
 
 znap source zsh-users/zsh-history-substring-search
 bindkey  history-substring-search-up
@@ -253,6 +253,9 @@ bindkey  history-substring-search-down
 znap source zsh-users/zsh-syntax-highlighting
 
 znap source sorin-ionescu/prezto modules/{command-not-found,completion}
+
+znap install asdf-vm/asdf
+path=(~/.asdf/shims(N-/) $path)
 
 () {
     local src zwc
@@ -265,6 +268,53 @@ znap source sorin-ionescu/prezto modules/{command-not-found,completion}
         shift
     done
 } ~/.zshrc.*~*.zwc~*~
+
+if (( $+commands[aws] )); then
+    zstyle ":prompt:pure:aws" show yes
+
+    autoload bashcompinit && bashcompinit
+    autoload -Uz compinit && compinit
+    complete -C $(command -v aws_completer) aws
+fi
+
+if (( $+commands[aws-vault] && $+commands[pass] )); then
+    export AWS_VAULT_BACKEND=pass
+    export AWS_VAULT_PASS_PASSWORD_STORE_DIR=~/.password-store
+    export AWS_VAULT_PASS_PREFIX=aws-vault
+fi
+
+if (( $+commands[direnv] )); then
+    znap eval direnv 'direnv hook zsh'
+fi
+
+if (( $+commands[kubectl] )); then
+    zstyle ":prompt:pure:k8s" show yes
+
+    znap fpath _kubectl 'kubectl completion zsh'
+
+    zaw-src-kubectl-get-context() {
+        candidates=(${(@f)"$(kubectl config get-contexts --no-headers -o name)"})
+        actions=(zaw-callback-kubectl-use-context)
+        act_descriptions=("kubectl use-context for zaw")
+    }
+
+    zaw-callback-kubectl-use-context() {
+        kubectl config use-context "$1"
+        zle accept-line
+    }
+
+    zaw-register-src -n kubectl-get-context zaw-src-kubectl-get-context
+
+    bindkey  zaw-kubectl-get-context
+fi
+
+if (( $+commands[helm] )); then
+    znap fpath _helm 'helm completion zsh'
+fi
+
+if (( $+commands[gh] )); then
+    znap fpath _gh 'gh completion -s zsh'
+fi
 
 if (( $ZPROF )); then
     zprof
