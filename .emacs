@@ -40,7 +40,7 @@
  '(custom-file (locate-user-emacs-file (format "emacs-%d.el" (emacs-pid))))
  '(exec-path
    `(,(expand-file-name "~/bin")
-     ,(expand-file-name "~/.asdf/shims")
+     ,(expand-file-name "~/.local/share/mise/shims")
      "/usr/local/bin"
      "/usr/bin"
      "/bin"
@@ -51,7 +51,7 @@
  '(indent-tabs-mode nil)
  '(inhibit-startup-screen t)
  '(initial-scratch-message nil)
- '(make-backup-files t)
+ '(make-backup-files nil)
  '(pop-up-windows nil)
  '(require-final-newline 'visit-save)
  '(scroll-bar-mode nil)
