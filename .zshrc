@@ -87,10 +87,6 @@ my_zshaddhistory() {
 
 zshaddhistory_functions+=(my_zshaddhistory)
 
-if (( $+commands[direnv] )); then
-    eval "$(direnv hook zsh)" >/dev/null 2>&1
-fi
-
 dotfiles() {
     git --git-dir ~/.dotfiles --work-tree ~ "$@"
 }
@@ -254,9 +250,6 @@ znap source zsh-users/zsh-syntax-highlighting
 
 znap source sorin-ionescu/prezto modules/{command-not-found,completion}
 
-znap install asdf-vm/asdf
-path=(~/.asdf/shims(N-/) $path)
-
 () {
     local src zwc
     while (( $# )); do
@@ -268,6 +261,10 @@ path=(~/.asdf/shims(N-/) $path)
         shift
     done
 } ~/.zshrc.*~*.zwc~*~
+
+if (( $+commands[mise] )); then
+    znap eval mise 'mise activate zsh'
+fi
 
 if (( $+commands[aws] )); then
     zstyle ":prompt:pure:aws" show yes
@@ -283,9 +280,10 @@ if (( $+commands[aws-vault] && $+commands[pass] )); then
     export AWS_VAULT_PASS_PREFIX=aws-vault
 fi
 
-if (( $+commands[direnv] )); then
-    znap eval direnv 'direnv hook zsh'
-fi
+    export AWS_VAULT_BACKEND=pass
+    export AWS_VAULT_PASS_PASSWORD_STORE_DIR=~/.password-store
+    export AWS_VAULT_PASS_PREFIX=aws-vault
+
 
 if (( $+commands[kubectl] )); then
     zstyle ":prompt:pure:k8s" show yes
@@ -312,6 +310,10 @@ if (( $+commands[helm] )); then
     znap fpath _helm 'helm completion zsh'
 fi
 
+if (( $+commands[hugo] )); then
+    znap fpath _hugo 'hugo completion zsh'
+fi
+
 if (( $+commands[gh] )); then
     znap fpath _gh 'gh completion -s zsh'
 fi
@@ -319,3 +321,11 @@ fi
 if (( $ZPROF )); then
     zprof
 fi
+
+# pnpm
+export PNPM_HOME="/Users/ttanaka/.local/share/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end
