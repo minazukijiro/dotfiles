@@ -172,6 +172,11 @@
 
 (leaf folding :ensure t)
 
+(leaf js-mode
+  :hook (js-mode-hook . (lambda ()
+                          (make-local-variable 'js-indent-level)
+                          (setq js-indent-level 2))))
+
 (leaf k8s-mode :ensure t)
 
 (leaf lua-mode :ensure t)
