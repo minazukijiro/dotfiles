@@ -1,30 +1,9 @@
 (deftheme anticolor
-  "")
-
-(custom-set-variables
- '(header-line-format
-   '("%l,%C  "
-     (:eval
-      (cond
-       ((not (buffer-file-name))
-        (buffer-name))
-       (buffer-read-only
-        (propertize buffer-file-truename 'face 'italic))
-       ((buffer-modified-p)
-        (propertize buffer-file-truename 'face 'bold))
-       (t
-        buffer-file-truename)))
-     skk-modeline-input-mode
-     (:eval
-      (propertize " " 'display `(space :align-to (- right ,(length mode-name)))))
-     mode-name))
- '(mode-line-format nil)
- '(menu-bar-mode nil)
- '(tool-bar-mode nil)
- '(scroll-bar-mode nil))
+  "anticolor theme")
 
 (custom-theme-set-faces
  'anticolor
+
  '(header-line ((t (:inherit nil :inverse-video nil :underline "black"))))
  '(region ((t (:background "yellow" :foreground "black"))))
  '(secondary-selection ((((class color) (min-colors 88) (background light)) (:background "yellow1")) (((class color) (min-colors 88) (background dark)) (:background "SkyBlue4")) (((class color) (min-colors 16) (background light)) (:background "yellow")) (((class color) (min-colors 16) (background dark)) (:background "SkyBlue4")) (((class color) (min-colors 8)) (:foreground "black" :background "cyan")) (t (:inverse-video t))))
@@ -41,5 +20,9 @@
  '(font-lock-variable-name-face ((t (:slant italic))))
  '(font-lock-warning-face ((t (:underline (:color "red" :style wave) :weight ultra-bold))))
  '(link ((t (:underline "green" :slant italic)))))
+
+(when load-file-name
+  (add-to-list 'custom-theme-load-path
+               (file-name-as-directory (file-name-directory load-file-name))))
 
 (provide-theme 'anticolor)
