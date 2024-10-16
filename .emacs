@@ -25,6 +25,32 @@
                 (erase-buffer)
                 (insert-file-contents scratch-buffer-file)))))
 
+(add-hook 'after-init-hook
+          (lambda ()
+            (custom-set-variables
+             '(custom-safe-themes t)
+             '(mode-line-format nil)
+             '(header-line-format
+               '("%l,%C  "
+                 (:eval
+                  (cond
+                   ((not (buffer-file-name))
+                    (buffer-name))
+                   (buffer-read-only
+                    (propertize buffer-file-truename 'face 'italic))
+                   ((buffer-modified-p)
+                    (propertize buffer-file-truename 'face 'bold))
+                   (t
+                    buffer-file-truename)))
+                 skk-modeline-input-mode
+                 (:eval
+                  (propertize " " 'display `(space :align-to (- right ,(length mode-name)))))
+                 mode-name))
+             '(menu-bar-mode nil)
+             '(tool-bar-mode nil)
+             '(scroll-bar-mode nil))
+            (load-theme 'anticolor t)))
+
 (add-hook 'buffer-kill-hook
           (lambda ()
             (when (eq (current-buffer) (get-buffer "*scratch*"))
@@ -71,13 +97,12 @@
     (set-display-table-slot display-table 5 ?│)
     (set-window-display-table (selected-window) display-table)))
 
-(load-theme 'anticolor t)
-
 (eval-and-compile
   (customize-set-variable
    'package-archives
    '(("gnu" . "https://elpa.gnu.org/packages/")
-     ("melpa" . "https://melpa.org/packages/")))
+     ("melpa" . "https://melpa.org/packages/")
+     ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
 
   (package-initialize)
 
@@ -160,6 +185,10 @@
 
 (leaf editorconfig :ensure t)
 
+(leaf find-file
+  :config
+  (setq default-directory "~/"))
+
 (leaf flycheck
   :ensure t
   :bind (("M-n" . flycheck-next-error)
@@ -168,7 +197,7 @@
   (flycheck-display-errors-delay . 0.3)
   :config
   (leaf flycheck-inline :ensure t :hook (flycheck-mode-hook . flycheck-inline-mode))
-  :global-minor-mode flycheck-mode)
+  :global-minor-mode global-flycheck-mode)
 
 (leaf folding :ensure t)
 
@@ -198,10 +227,13 @@
         (delete-file x))))
   :ensure t
   :bind ("C-c j" . open-junk-file)
-  :hook (kill-emacs-hook . my:open-junk-file-delete-files)
+  ;; :hook (kill-emacs-hook . my:open-junk-file-delete-files)
   :init
   (setq my:open-junk-file-directory (locate-user-emacs-file "junk/"))
   (setq open-junk-file-format (concat my:open-junk-file-directory "%s.")))
+
+(leaf org-mode
+  :bind ("C-c c" . org-capture))
 
 (leaf popwin
   :ensure t
