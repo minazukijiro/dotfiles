@@ -1,66 +1,75 @@
-(add-hook 'after-save-hook
-          (lambda ()
-            (let ((file-name (buffer-file-name (current-buffer))))
-              (when (and (file-exists-p file-name)
-                         (eq (point-min) (point-max)))
-                (delete-file file-name)))))
+(add-hook
+ 'after-save-hook
+ (lambda ()
+   (let ((file-name (buffer-file-name (current-buffer))))
+     (when (and (file-exists-p file-name)
+                (eq (point-min) (point-max)))
+       (delete-file file-name)))))
 
-(add-hook 'after-save-hook
-          'executable-make-buffer-file-executable-if-script-p)
+(add-hook
+ 'after-save-hook
+ 'executable-make-buffer-file-executable-if-script-p)
 
-(add-hook 'kill-emacs-hook
-          (lambda ()
-            (when (and
-                   (boundp 'custom-file)
-                   (file-exists-p custom-file))
-              (delete-file custom-file))))
+(add-hook
+ 'kill-emacs-hook
+ (lambda ()
+   (when (and
+          (boundp 'custom-file)
+          (file-exists-p custom-file))
+     (delete-file custom-file))))
 
 (defvar scratch-buffer-file
   (locate-user-emacs-file "scratch"))
 
-(add-hook 'after-init-hook
-          (lambda ()
-            (when (file-exists-p scratch-buffer-file)
-              (with-current-buffer (get-buffer-create "*scratch*")
-                (erase-buffer)
-                (insert-file-contents scratch-buffer-file)))))
+(add-hook
+ 'after-init-hook
+ (lambda ()
+   (when (file-exists-p scratch-buffer-file)
+     (with-current-buffer (get-buffer-create "*scratch*")
+       (erase-buffer)
+       (insert-file-contents scratch-buffer-file)))))
 
-(add-hook 'after-init-hook
-          (lambda ()
-            (custom-set-variables
-             '(custom-safe-themes t)
-             '(mode-line-format nil)
-             '(header-line-format
-               '("%l,%C  "
-                 (:eval
-                  (cond
-                   ((not (buffer-file-name))
-                    (buffer-name))
-                   (buffer-read-only
-                    (propertize buffer-file-truename 'face 'italic))
-                   ((buffer-modified-p)
-                    (propertize buffer-file-truename 'face 'bold))
-                   (t
-                    buffer-file-truename)))
-                 skk-modeline-input-mode
-                 (:eval
-                  (propertize " " 'display `(space :align-to (- right ,(length mode-name)))))
-                 mode-name))
-             '(menu-bar-mode nil)
-             '(tool-bar-mode nil)
-             '(scroll-bar-mode nil))
-            (load-theme 'anticolor t)))
+(add-hook
+ 'kill-emacs-hook
+ (lambda ()
+   (with-current-buffer (get-buffer-create "*scratch*")
+     (write-region (point-min) (point-max) scratch-buffer-file nil t))))
 
-(add-hook 'buffer-kill-hook
-          (lambda ()
-            (when (eq (current-buffer) (get-buffer "*scratch*"))
-              (rename-buffer "*scratch~*")
-              (clone-buffer "*scratch*"))))
+(add-hook
+ 'buffer-kill-hook
+ (lambda ()
+   (when (eq (current-buffer) (get-buffer "*scratch*"))
+     (rename-buffer "*scratch~*")
+     (clone-buffer "*scratch*"))))
 
-(add-hook 'kill-emacs-hook
-          (lambda ()
-            (with-current-buffer (get-buffer-create "*scratch*")
-              (write-region (point-min) (point-max) scratch-buffer-file nil t))))
+(add-hook
+ 'after-init-hook
+ (lambda ()
+   (message "theme setting start")
+   (custom-set-variables
+    '(custom-safe-themes t)
+    '(mode-line-format nil)
+    '(menu-bar-mode nil)
+    '(tool-bar-mode nil)
+    '(scroll-bar-mode nil)
+    '(header-line-format
+      '("%l,%C  "
+        (:eval
+         (cond
+          ((not (buffer-file-name))
+           (buffer-name))
+          (buffer-read-only
+           (propertize buffer-file-truename 'face 'italic))
+          ((buffer-modified-p)
+           (propertize buffer-file-truename 'face 'bold))
+          (t
+           buffer-file-truename)))
+        skk-modeline-input-mode
+        (:eval
+         (propertize " " 'display `(space :align-to (- right ,(length mode-name)))))
+        mode-name)))
+   (load-theme 'anticolor t)
+   (message "theme setting start")))
 
 (custom-set-variables
  '(custom-file (locate-user-emacs-file (format "emacs-%d.el" (emacs-pid))))
