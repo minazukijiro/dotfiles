@@ -1,3 +1,5 @@
+(setq default-directory "~/")
+
 (add-hook
  'after-save-hook
  (lambda ()
@@ -232,11 +234,11 @@
            (boundp 'my:open-junk-file-directory)
            (file-directory-p my:open-junk-file-directory))
       (dolist (x
-               (directory-files my:open-junk-file-directory t "^\\([^.]\\|\\.[^.]\\|\\.\\.\\.)"))
+               (directory-files my:open-junk-file-directory t "^\\([^.]\\|\\.[^.]\\|\\.\\..\\)"))
         (delete-file x))))
   :ensure t
   :bind ("C-c j" . open-junk-file)
-  ;; :hook (kill-emacs-hook . my:open-junk-file-delete-files)
+  :hook (kill-emacs-hook . my:open-junk-file-delete-files)
   :init
   (setq my:open-junk-file-directory (locate-user-emacs-file "junk/"))
   (setq open-junk-file-format (concat my:open-junk-file-directory "%s.")))
