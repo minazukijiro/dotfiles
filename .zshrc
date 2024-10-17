@@ -130,7 +130,7 @@ dotfiles-commit() {
                 C[' 'MD]  ) commit=0 msg='copied in index' ;;
                 [MARC]' ' ) commit=0 msg='index and work tree matches' ;;
                 [' 'MARC]M) commit=1 msg="update $f" ;;
-                [' 'MARC]D) commit=0 msg='deleted in work tree' ;;
+                [' 'MARC]D) commit=1 msg='deleted in work tree' ;;
                 [' 'D]R   ) commit=0 msg='renamed in work tree' ;;
                 [' 'D]C   ) commit=0 msg='copied in work tree' ;;
                 DD        ) commit=0 msg='unmerged, both deleted' ;;
