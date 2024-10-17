@@ -161,6 +161,17 @@
   (whitespace-action . '(auto-cleanup))
   :global-minor-mode global-whitespace-mode)
 
+(leaf browse-at-remote
+  :ensure t
+  :preface
+  (defun my/copy-url-at-remote ()
+    (interactive)
+    (let ((url (browse-at-remote-get-url)))
+      (kill-new url)
+    (message "URL: %s" url)))
+  :bind (("C-c g g" . my/copy-url-at-remote)
+         ("C-c o" . browse-at-remote)))
+
 (leaf company
   :ensure t
   :bind ("C-c i" . company-complete)
@@ -244,8 +255,7 @@
   (setq open-junk-file-format (concat my:open-junk-file-directory "%s.")))
 
 (leaf org-mode
-  :bind ("C-c c" . org-capture)
-  :init
+  :preface
   (setq url-request-extra-headers
         '(("User-Agent" . "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36")))
 
@@ -259,11 +269,12 @@
 
   (defun my/org-capture-new-wish-list ()
     (let* ((url (read-from-minibuffer "URL: "))
-           (title (www-get-page-title url))
+           (title (www-get-page-title url)))
       (format "[ ] %s\n%s" title url)))
 
   (setq org-capture-templates
-        '(("w" "Add to wish list" checkitem (file+headline "entry.org" "Wish list") (function my/org-capture-new-wish-list)))))
+        '(("w" "Add to wish list" checkitem (file+headline "entry.org" "Wish list") (function my/org-capture-new-wish-list))))
+  :bind ("C-c C-c" . org-capture))
 
 (leaf popwin
   :ensure t
