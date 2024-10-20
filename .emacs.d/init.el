@@ -164,13 +164,13 @@
 (leaf browse-at-remote
   :ensure t
   :preface
-  (defun my/copy-url-at-remote ()
+  (defun my:copy-url-at-remote ()
     (interactive)
     (let ((url (browse-at-remote-get-url)))
       (kill-new url)
     (message "URL: %s" url)))
-  :bind (("C-c g g" . my/copy-url-at-remote)
-         ("C-c o" . browse-at-remote)))
+  :bind (("C-c g g" . my:copy-url-at-remote)
+         ("C-c g o" . browse-at-remote)))
 
 (leaf company
   :ensure t
@@ -254,27 +254,36 @@
   (setq my:open-junk-file-directory (locate-user-emacs-file "junk/"))
   (setq open-junk-file-format (concat my:open-junk-file-directory "%s.")))
 
-(leaf org-mode
+ (leaf org-mode
   :preface
-  (setq url-request-extra-headers
-        '(("User-Agent" . "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36")))
-
-  (require 'dom)
-
   (defun www-get-page-title (url)
-    (let* ((dom (with-current-buffer
+    (let* ((url-request-extra-headers '(("User-Agent" . "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36")))
+           (dom (with-current-buffer
                     (url-retrieve-synchronously url)
                   (libxml-parse-html-region url-http-end-of-headers (point-max)))))
       (replace-regexp-in-string "\\`\\(?:\\s-\\|\n\\)+\\|\\(?:\\s-\\|\n\\)+\\'" "" (dom-text (dom-by-tag dom 'title)))))
 
-  (defun my/org-capture-new-wish-list ()
+  (defun my:org-capture-new-wish-list ()
     (let* ((url (read-from-minibuffer "URL: "))
            (title (www-get-page-title url)))
-      (format "[ ] %s\n%s" title url)))
+      (format "[ ] [[%s][%s]]" url title)))
 
-  (setq org-capture-templates
-        '(("w" "Add to wish list" checkitem (file+headline "entry.org" "Wish list") (function my/org-capture-new-wish-list))))
-  :bind ("C-c C-c" . org-capture))
+  (defun my:org-file-list ()
+    (directory-files "~/org" t "\\.org\\'"))
+  :custom
+  (org-startup-folded . t)
+  (org-directory . "~/org")
+  (org-refile-targets . '((my:org-file-list :maxlevel . 4)))
+  (org-todo-keywords . '((sequence "TODO(t)" "SOMEDAY(s)" "WAITING(w)" "|" "DONE(x)")))
+  (org-log-done . 'time)
+  (org-capture-templates . '(("w" "Add an item to the wish list" checkitem
+                              (file "wish-list.org") (function my:org-capture-new-wish-list) :immediate-finish t)
+                             ("t" "Add a task to the INBOX" entry
+                              (file+headline "gtd.org" "Inbox") "* TODO %?\nEntered on %U")
+                             ("T" "Add a taks to the gtd"
+                             ))
+  :bind (("C-c c" . org-capture)
+         ("C-c t" . org-todo)))
 
 (leaf popwin
   :ensure t
