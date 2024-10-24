@@ -262,28 +262,32 @@
                     (url-retrieve-synchronously url)
                   (libxml-parse-html-region url-http-end-of-headers (point-max)))))
       (replace-regexp-in-string "\\`\\(?:\\s-\\|\n\\)+\\|\\(?:\\s-\\|\n\\)+\\'" "" (dom-text (dom-by-tag dom 'title)))))
-
   (defun my:org-capture-new-wish-list ()
     (let* ((url (read-from-minibuffer "URL: "))
            (title (www-get-page-title url)))
       (format "[ ] [[%s][%s]]" url title)))
-
   (defun my:org-file-list ()
     (interactive)
     (directory-files org-directory t "\\.org\\'"))
+  (defun my:org-open-directory ()
+    (interactive)
+    (find-file org-directory))
   :custom
+  (org-use-speed-commands . t)
   (org-startup-folded . 'content)
   (org-directory . "~/org")
   (org-refile-targets . '((my:org-file-list :maxlevel . 4)))
   (org-agenda-files . '("~/org"))
-  (org-todo-keywords . '((sequence "TODO(t)" "SOMEDAY(s)" "WAITING(w)" "|" "DONE(x)")))
+  (org-todo-keywords . '((sequence "TODO(t)" "|" "DONE(x)" "CANCELLED(c)")))
   (org-log-done . 'time)
-  (org-capture-templates . '(("w" "Add an item to the wish list" checkitem
+  (org-capture-templates . '(("t" "Add a task to the INBOX" entry
+                              (file+headline "gtd.org" "Inbox") "* TODO %?\nEntered on %U")
+                             ("w" "Add an item to the wish list" checkitem
                               (file "wish-list.org") (function my:org-capture-new-wish-list) :immediate-finish t)
-                             ("t" "Add a task to the INBOX" entry
-                              (file+headline "gtd.org" "Inbox") "* TODO %?\nEntered on %U")))
+                             ))
   :bind (("C-c c" . org-capture)
-         ("C-C a" . org-agenda)))
+         ("C-C a" . org-agenda)
+         ("C-c o" . my:org-open-directory)))
 
 (leaf popwin
   :ensure t
