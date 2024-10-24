@@ -269,21 +269,21 @@
       (format "[ ] [[%s][%s]]" url title)))
 
   (defun my:org-file-list ()
-    (directory-files "~/org" t "\\.org\\'"))
+    (interactive)
+    (directory-files org-directory t "\\.org\\'"))
   :custom
-  (org-startup-folded . t)
+  (org-startup-folded . 'content)
   (org-directory . "~/org")
   (org-refile-targets . '((my:org-file-list :maxlevel . 4)))
+  (org-agenda-files . '("~/org"))
   (org-todo-keywords . '((sequence "TODO(t)" "SOMEDAY(s)" "WAITING(w)" "|" "DONE(x)")))
   (org-log-done . 'time)
   (org-capture-templates . '(("w" "Add an item to the wish list" checkitem
                               (file "wish-list.org") (function my:org-capture-new-wish-list) :immediate-finish t)
                              ("t" "Add a task to the INBOX" entry
-                              (file+headline "gtd.org" "Inbox") "* TODO %?\nEntered on %U")
-                             ("T" "Add a taks to the gtd"
-                             ))
+                              (file+headline "gtd.org" "Inbox") "* TODO %?\nEntered on %U")))
   :bind (("C-c c" . org-capture)
-         ("C-c t" . org-todo)))
+         ("C-C a" . org-agenda)))
 
 (leaf popwin
   :ensure t
