@@ -43,7 +43,7 @@ bindkey ^L clear-screen-and-scrollback
 
 autoload -Uz bracketed-paste-magic
 zle -N bracketed-paste bracketed-paste-magic
-zstyle ':bracketed-paste-magic' paste-init backward-extend-paste
+zstyle :bracketed-paste-magic paste-init backward-extend-paste
 
 autoload -Uz select-word-style
 select-word-style default
