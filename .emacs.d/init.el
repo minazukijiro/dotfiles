@@ -276,14 +276,18 @@
   (org-use-speed-commands . t)
   (org-startup-folded . 'content)
   (org-directory . "~/org")
+  (org-default-notes-file . (concat org-directory "/notes.org"))
   (org-refile-targets . '((my:org-file-list :maxlevel . 4)))
   (org-agenda-files . '("~/org"))
   (org-todo-keywords . '((sequence "TODO(t)" "|" "DONE(x)" "CANCELLED(c)")))
   (org-log-done . 'time)
-  (org-capture-templates . '(("t" "Add a task to the INBOX" entry
-                              (file+headline "gtd.org" "Inbox") "* TODO %?\nEntered on %U")
-                             ("w" "Add an item to the wish list" checkitem
-                              (file "wish-list.org") (function my:org-capture-new-wish-list) :immediate-finish t)
+  (org-capture-templates . '(("t" "Todo" entry
+                              (file+headline (concat org-directory "/gtd.org") "Tasks")
+                              "* TODO %?\nEntered on %U")
+                             ("w" "Wish list" checkitem
+                              (file (concat org-directory "/wish-list.org"))
+                              (function my:org-capture-new-wish-list)
+                              :immediate-finish t)
                              ))
   :bind (("C-c c" . org-capture)
          ("C-C a" . org-agenda)
