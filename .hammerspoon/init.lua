@@ -1,12 +1,12 @@
 local tapdance = require 'tapdance'
 
-function launchOrFocusKitty()
-   hs.application.launchOrFocus('Alacritty')
-   -- hs.application.launchOrFocus('Kitty')
+function launchOrFocusTerm()
+   -- hs.application.launchOrFocus('Alacritty')
+   hs.application.launchOrFocus('Kitty')
    -- hs.application.launchOrFocus('Terminal')
 end
 
-focusterm = tapdance.new('alt', 2, 200, launchOrFocusKitty)
+focusterm = tapdance.new('alt', 2, 200, launchOrFocusTerm)
 focusterm.watcher:start()
 
 --
