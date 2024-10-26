@@ -262,10 +262,10 @@
                     (url-retrieve-synchronously url)
                   (libxml-parse-html-region url-http-end-of-headers (point-max)))))
       (replace-regexp-in-string "\\`\\(?:\\s-\\|\n\\)+\\|\\(?:\\s-\\|\n\\)+\\'" "" (dom-text (dom-by-tag dom 'title)))))
-  (defun my:org-capture-new-bookmark ()
+  (defun my:org-capture-new-read-it-later ()
     (let* ((url (read-from-minibuffer "URL: "))
            (title (www-get-page-title url)))
-      (format "* [[%s][%s]]" url title)))
+      (format "* UNREAD [[%s][%s]]" url title)))
   (defun my:org-capture-new-wish-list ()
     (let* ((url (read-from-minibuffer "URL: "))
            (title (www-get-page-title url)))
@@ -283,19 +283,19 @@
   (org-default-notes-file . "notes.org")
   (org-refile-targets . '((my:org-file-list :maxlevel . 4)))
   (org-agenda-files . `(,org-directory))
-  (org-todo-keywords . '((sequence "TODO(t)" "|" "DONE(x)" "CANCELLED(c)")))
+  (org-todo-keywords . '((sequence "TODO(t)" "WAIT(w)" "|" "DONE(x)" "SOMEDAY(s)")))
   (org-log-done . 'time)
   (org-capture-templates
    .
-   '(("b" "Bookmark" entry
-      (file "bookmark.org")
-      (function my:org-capture-new-bookmark)
+   '(("r" "Read it later" entry
+      (file "read-it-later.org")
+      (function my:org-capture-new-read-it-later)
       :immediate-finish t)
      ("t" "Todo" entry
-      (file+headline "gtd.org" "Tasks")
+      (file+headline "notes.org" "Tasks")
       "* TODO %?\nEntered on %U")
      ("w" "Wish list" checkitem
-      (file "wishlist.org")
+      (file "wish-list.org")
       (function my:org-capture-new-wish-list)
       :immediate-finish t)
      ))
