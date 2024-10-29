@@ -230,6 +230,7 @@ ssh-add -l >/dev/null \
     }
     source $znapzsh
     zstyle ':znap:*' repos-dir $znapdir/repos
+    zstyle ':znap:*:*' git-maintenance off
 }
 
 PURE_PROMPT_SYMBOL='›'
@@ -316,6 +317,12 @@ fi
 
 if (( $+commands[gh] )); then
     znap fpath _gh 'gh completion -s zsh'
+fi
+
+
+if (( $+commands[syncthing] )); then
+    znap eval syncthing 'syncthing install-completions'
+
 fi
 
 if (( $ZPROF )); then
