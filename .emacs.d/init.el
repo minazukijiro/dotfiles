@@ -279,7 +279,7 @@
   :custom
   (org-use-speed-commands . t)
   (org-startup-folded . 'content)
-  (org-directory . "~/Sync/org")
+  (org-directory . "~/org")
   (org-default-notes-file . "notes.org")
   (org-refile-targets . '((my:org-file-list :maxlevel . 4)))
   (org-agenda-files . `(,org-directory))
