@@ -262,14 +262,14 @@
                     (url-retrieve-synchronously url)
                   (libxml-parse-html-region url-http-end-of-headers (point-max)))))
       (replace-regexp-in-string "\\`\\(?:\\s-\\|\n\\)+\\|\\(?:\\s-\\|\n\\)+\\'" "" (dom-text (dom-by-tag dom 'title)))))
-  (defun my:org-capture-new-read-it-later ()
+  (defun my:org-capture-new-reading-list ()
     (let* ((url (read-from-minibuffer "URL: "))
            (title (www-get-page-title url)))
-      (format "* UNREAD [[%s][%s]]" url title)))
+      (format "* UNREAD [[%s][%s]]\nEntered on %U" url title)))
   (defun my:org-capture-new-wish-list ()
     (let* ((url (read-from-minibuffer "URL: "))
            (title (www-get-page-title url)))
-      (format "[ ] [[%s][%s]]" url title)))
+      (format "* WANT [[%s][%s]]\nEntered on %U" url title)))
   (defun my:org-file-list ()
     (interactive)
     (directory-files org-directory t "\\.org\\'"))
@@ -279,7 +279,7 @@
   :custom
   (org-use-speed-commands . t)
   (org-startup-folded . 'content)
-  (org-directory . "~/org")
+  (org-directory . "~/Sync/org")
   (org-default-notes-file . "notes.org")
   (org-refile-targets . '((my:org-file-list :maxlevel . 4)))
   (org-agenda-files . `(,org-directory))
@@ -287,15 +287,24 @@
   (org-log-done . 'time)
   (org-capture-templates
    .
-   '(("r" "Read it later" entry
-      (file "read-it-later.org")
-      (function my:org-capture-new-read-it-later)
-      :immediate-finish t)
-     ("t" "Todo" entry
-      (file+headline "notes.org" "Tasks")
+   '(("b" "Add “what I want to do” to the Bucket List" entry
+      (file+headline "bucket-list.org" "Task [/]")
       "* TODO %?\nEntered on %U")
-     ("w" "Wish list" checkitem
-      (file "wish-list.org")
+     ("R" "Add “to read” to the Reading List" entry
+      (file+headline "bucket-list.org" "Task [/]")
+      "* UNREAD %?\nEntered on %U")
+     ("r" "Add “to read” to the Reading List from a URL" entry
+      (file+headline "reading-list.org" "Task [/]")
+      (function my:org-capture-new-reading-list)
+      :immediate-finish t)
+     ("t" "Add a task to the GTD" entry
+      (file+headline "gtd.org" "Inbox")
+      "* TODO %?\nEntered on %U")
+     ("W" "Add “What I Want” to the Wish List" checkitem
+      (file+headline "wish-list.org" "Task [/]")
+      "* WANT %?\nEntered on %U")
+     ("w" "Add “What I Want” to the Wish List from a URL" checkitem
+      (file+headline "wish-list.org" "Task [/]")
       (function my:org-capture-new-wish-list)
       :immediate-finish t)
      ))
