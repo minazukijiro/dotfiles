@@ -277,7 +277,9 @@
     (interactive)
     (find-file org-directory))
   :init
-  (load (concat org-directory "/" system-name ".el"))
+  (let ((org-global-file (locate-user-emacs-file "org-global.el")))
+    (when (file-exists-p org-global-file)
+      (load org-global-file)))
   :custom
   (org-use-speed-commands . t)
   (org-startup-folded . 'content)
