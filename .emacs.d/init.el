@@ -276,6 +276,8 @@
   (defun my:org-open-directory ()
     (interactive)
     (find-file org-directory))
+  :init
+  (load (concat org-directory "/" system-name ".el"))
   :custom
   (org-use-speed-commands . t)
   (org-startup-folded . 'content)
@@ -288,25 +290,17 @@
   (org-capture-templates
    .
    '(("b" "Add “what I want to do” to the Bucket List" entry
-      (file+headline "bucket-list.org" "Task [/]")
-      "* TODO %?\nEntered on %U")
+      (file+headline "bucket-list.org" "Task [/]") "* TODO %?\nEntered on %U")
      ("R" "Add “to read” to the Reading List" entry
-      (file+headline "bucket-list.org" "Task [/]")
-      "* UNREAD %?\nEntered on %U")
+      (file+headline "bucket-list.org" "Task [/]") "* UNREAD %?\nEntered on %U")
      ("r" "Add “to read” to the Reading List from a URL" entry
-      (file+headline "reading-list.org" "Task [/]")
-      (function my:org-capture-new-reading-list)
-      :immediate-finish t)
+      (file+headline "reading-list.org" "Task [/]") (function my:org-capture-new-reading-list) :immediate-finish t)
      ("t" "Add a task to the GTD" entry
-      (file+headline "gtd.org" "Inbox")
-      "* TODO %?\nEntered on %U")
+      (file+headline "gtd.org" "Inbox") "* TODO %?\nEntered on %U")
      ("W" "Add “What I Want” to the Wish List" checkitem
-      (file+headline "wish-list.org" "Task [/]")
-      "* WANT %?\nEntered on %U")
+      (file+headline "wish-list.org" "Task [/]") "* WANT %?\nEntered on %U")
      ("w" "Add “What I Want” to the Wish List from a URL" checkitem
-      (file+headline "wish-list.org" "Task [/]")
-      (function my:org-capture-new-wish-list)
-      :immediate-finish t)
+      (file+headline "wish-list.org" "Task [/]") (function my:org-capture-new-wish-list) :immediate-finish t)
      ))
   :bind (("C-c c" . org-capture)
          ("C-C a" . org-agenda)
