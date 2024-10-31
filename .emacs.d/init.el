@@ -217,6 +217,7 @@
          ("M-p" . flycheck-previous-error))
   :custom
   (flycheck-display-errors-delay . 0.3)
+  (flycheck-disabled-checkers . '(emacs-lisp-checkdoc))
   :config
   (leaf flycheck-inline :ensure t :hook (flycheck-mode-hook . flycheck-inline-mode))
   :global-minor-mode global-flycheck-mode)
@@ -277,14 +278,13 @@
     (interactive)
     (find-file org-directory))
   :init
-  (let ((org-global-file (locate-user-emacs-file "org-global.el")))
+  (let ((org-global-file (concat org-directory "/org-global.el")))
     (when (file-exists-p org-global-file)
       (load org-global-file)))
   :custom
   (org-use-speed-commands . t)
-  (org-startup-folded . 'content)
+  ;;(org-startup-folded . 'content)
   (org-directory . "~/org")
-  (org-default-notes-file . "notes.org")
   (org-refile-targets . '((my:org-file-list :maxlevel . 4)))
   (org-agenda-files . `(,org-directory))
   (org-todo-keywords . '((sequence "TODO(t)" "WAIT(w)" "|" "DONE(x)" "SOMEDAY(s)")))
