@@ -16,11 +16,8 @@
 	showUntrackedFiles = no
 	showStash = yes
 [maintenance]
-	repo = /Users/ttanaka/.znap/repos/kur-11/pure
 	repo = /Users/ttanaka/.znap/repos/minazukijiro/pure
-	repo = /Users/ttanaka/.znap/repos/sindresorhus/pure
 	repo = /Users/ttanaka/.znap/repos/sorin-ionescu/prezto
-	repo = /Users/ttanaka/.znap/repos/teliteli/pure
 	repo = /Users/ttanaka/.znap/repos/zsh-users/zaw
 	repo = /Users/ttanaka/.znap/repos/zsh-users/zsh-autosuggestions
 	repo = /Users/ttanaka/.znap/repos/zsh-users/zsh-completions
