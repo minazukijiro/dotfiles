@@ -169,7 +169,7 @@ emacs-or-client() {
 
 alias e='emacs-or-client'
 alias emacs='emacs-or-client'
-export EDITOR=emacs
+export EDITOR=emacsclient
 
 alias grep='grep --color=auto'
 
