@@ -1,7 +1,9 @@
 (when (display-graphic-p)
   (require 'server)
   (unless (server-running-p)
-    (server-start)))
+    (server-start))
+
+  (setq confirm-kill-emacs 'yes-or-no-p))
 
 (defvar www-get-page-title-user-agent
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36")
@@ -63,6 +65,7 @@
  '(exec-path
    `(,(expand-file-name "~/bin")
      ,(expand-file-name "~/.local/share/mise/shims")
+     "/opt/homebrew/bin"
      "/usr/local/bin"
      "/usr/bin"
      "/bin"
@@ -117,11 +120,23 @@
     ))
 
 (leaf eshell
-  :bind ("C-c #" . eshell)
+  :bind ("C-#" . eshell)
   :custom (eshell-path-env . `,(string-join exec-path ":"))
   :config
   (defun eshell/hello ()
     (message "hello world")))
+
+(leaf gnus
+  :custom
+  (gnus-home-directory . "~/gnus")
+  (message-directory . `,(concat gnus-home-directory "/Mail"))
+  (mail-source-directory . message-directory)
+  (nnfolder-directory . `,(concat message-directory "/archive"))
+  (pop3-uidl-file . `,(concat gnus-home-directory "/.pop3-uidl"))
+  (nntmp-authinfo-file . `,(concat gnus-home-directory "/.authinfo"))
+  (auth-sources . `(nntmp-authinfo-file
+                    ,(concat gnus-home-directory "/.authinfo.gpg")
+                    ,(concat gnus-home-directory "/.netrc"))))
 
 (leaf ido
   :custom
