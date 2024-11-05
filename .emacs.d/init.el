@@ -1,4 +1,17 @@
-(setq default-directory "~/")
+(when (display-graphic-p)
+  (require 'server)
+  (unless (server-running-p)
+    (server-start)))
+
+(defvar www-get-page-title-user-agent
+  "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36")
+
+(defun www-get-page-title (url)
+  (let* ((url-request-extra-headers '(("User-Agent" . www-get-page-title-user-agent)))
+         (dom (with-current-buffer (url-retrieve-synchronously url)
+                (libxml-parse-html-region url-http-end-of-headers (point-max))))
+         (title (dom-text (dom-by-tag dom 'title))))
+    (replace-regexp-in-string "\\`\\(?:\\s-\\|\n\\)+\\|\\(?:\\s-\\|\n\\)+\\'" "" title)))
 
 (add-hook
  'after-save-hook
@@ -44,37 +57,9 @@
      (rename-buffer "*scratch~*")
      (clone-buffer "*scratch*"))))
 
-(add-hook
- 'after-init-hook
- (lambda ()
-   (message "theme setting start")
-   (custom-set-variables
-    '(custom-safe-themes t)
-    '(mode-line-format nil)
-    '(menu-bar-mode nil)
-    '(tool-bar-mode nil)
-    '(scroll-bar-mode nil)
-    '(header-line-format
-      '("%l,%C  "
-        (:eval
-         (cond
-          ((not (buffer-file-name))
-           (buffer-name))
-          (buffer-read-only
-           (propertize buffer-file-truename 'face 'italic))
-          ((buffer-modified-p)
-           (propertize buffer-file-truename 'face 'bold))
-          (t
-           buffer-file-truename)))
-        skk-modeline-input-mode
-        (:eval
-         (propertize " " 'display `(space :align-to (- right ,(length mode-name)))))
-        mode-name)))
-   (load-theme 'anticolor t)
-   (message "theme setting start")))
-
 (custom-set-variables
  '(custom-file (locate-user-emacs-file (format "emacs-%d.el" (emacs-pid))))
+ '(default-directory "~/")
  '(exec-path
    `(,(expand-file-name "~/bin")
      ,(expand-file-name "~/.local/share/mise/shims")
@@ -100,6 +85,8 @@
  '(show-paren-mode t)
  '(split-width-threshold 0)
  '(system-time-locale "C" t))
+
+(load-theme 'anticolor t)
 
 (let ((display-table (or buffer-display-table standard-display-table)))
   (when display-table
@@ -150,6 +137,58 @@
   (leaf ido-completing-read+ :ensure t :global-minor-mode ido-ubiquitous-mode)
   (ido-mode t)
   (ido-everywhere t))
+
+(leaf js-mode
+  :hook (js-mode-hook . (lambda ()
+                          (make-local-variable 'js-indent-level)
+                          (setq js-indent-level 2))))
+
+(leaf org-mode
+  :preface
+  (defun my:org-capture-new-reading-list ()
+    (let* ((url (read-from-minibuffer "URL: "))
+           (title (www-get-page-title url)))
+      (format "* UNREAD [[%s][%s]]\nEntered on %U" url title)))
+  (defun my:org-capture-new-wish-list ()
+    (let* ((url (read-from-minibuffer "URL: "))
+           (title (www-get-page-title url)))
+      (format "* WANT [[%s][%s]]\nEntered on %U" url title)))
+  (defun my:org-file-list ()
+    (interactive)
+    (directory-files org-directory t "\\.org\\'"))
+  :init
+  (let ((org-global-file (concat org-directory "/org-global.el")))
+    (when (file-exists-p org-global-file)
+      (load org-global-file)))
+  :custom
+  (org-use-speed-commands . t)
+  (org-startup-folded . 'content)
+  (org-directory . "~/org")
+  (org-refile-targets . '((my:org-file-list :maxlevel . 4)))
+  (org-agenda-files . `(,org-directory))
+  (org-todo-keywords . '((sequence "TODO(t)" "WAIT(w)" "|" "DONE(x)" "SOMEDAY(s)")))
+  (org-log-done . 'time)
+  (org-capture-templates
+   .
+   '(("b" "Add “what I want to do” to the Bucket List" entry
+      (file+headline "bucket-list.org" "Task [/]") "* TODO %?\nEntered on %U")
+     ("R" "Add “to read” to the Reading List" entry
+      (file+headline "bucket-list.org" "Task [/]") "* UNREAD %?\nEntered on %U")
+     ("r" "Add “to read” to the Reading List from a URL" entry
+      (file+headline "reading-list.org" "Task [/]") (function my:org-capture-new-reading-list) :immediate-finish t)
+     ("t" "Add a task to the GTD" entry
+      (file+headline "gtd.org" "Inbox") "* TODO %?\nEntered on %U")
+     ("W" "Add “What I Want” to the Wish List" checkitem
+      (file+headline "wish-list.org" "Task [/]") "* WANT %?\nEntered on %U")
+     ("w" "Add “What I Want” to the Wish List from a URL" checkitem
+      (file+headline "wish-list.org" "Task [/]") (function my:org-capture-new-wish-list) :immediate-finish t)
+     ))
+  :bind (("C-c c" . org-capture)
+         ("C-C a" . org-agenda)
+         ;;("C-c o" . my:org-open-directory)))
+         ("C-c o" . (lambda ()
+                      (interactive)
+                      (find-file org-directory)))))
 
 (leaf whitespace
   :hook
@@ -207,10 +246,6 @@
 
 (leaf editorconfig :ensure t)
 
-(leaf find-file
-  :config
-  (setq default-directory "~/"))
-
 (leaf flycheck
   :ensure t
   :bind (("M-n" . flycheck-next-error)
@@ -223,11 +258,6 @@
   :global-minor-mode global-flycheck-mode)
 
 (leaf folding :ensure t)
-
-(leaf js-mode
-  :hook (js-mode-hook . (lambda ()
-                          (make-local-variable 'js-indent-level)
-                          (setq js-indent-level 2))))
 
 (leaf k8s-mode :ensure t)
 
@@ -254,59 +284,6 @@
   :init
   (setq my:open-junk-file-directory (locate-user-emacs-file "junk/"))
   (setq open-junk-file-format (concat my:open-junk-file-directory "%s.")))
-
- (leaf org-mode
-  :preface
-  (defun www-get-page-title (url)
-    (let* ((url-request-extra-headers '(("User-Agent" . "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36")))
-           (dom (with-current-buffer
-                    (url-retrieve-synchronously url)
-                  (libxml-parse-html-region url-http-end-of-headers (point-max)))))
-      (replace-regexp-in-string "\\`\\(?:\\s-\\|\n\\)+\\|\\(?:\\s-\\|\n\\)+\\'" "" (dom-text (dom-by-tag dom 'title)))))
-  (defun my:org-capture-new-reading-list ()
-    (let* ((url (read-from-minibuffer "URL: "))
-           (title (www-get-page-title url)))
-      (format "* UNREAD [[%s][%s]]\nEntered on %U" url title)))
-  (defun my:org-capture-new-wish-list ()
-    (let* ((url (read-from-minibuffer "URL: "))
-           (title (www-get-page-title url)))
-      (format "* WANT [[%s][%s]]\nEntered on %U" url title)))
-  (defun my:org-file-list ()
-    (interactive)
-    (directory-files org-directory t "\\.org\\'"))
-  (defun my:org-open-directory ()
-    (interactive)
-    (find-file org-directory))
-  :init
-  (let ((org-global-file (concat org-directory "/org-global.el")))
-    (when (file-exists-p org-global-file)
-      (load org-global-file)))
-  :custom
-  (org-use-speed-commands . t)
-  ;;(org-startup-folded . 'content)
-  (org-directory . "~/org")
-  (org-refile-targets . '((my:org-file-list :maxlevel . 4)))
-  (org-agenda-files . `(,org-directory))
-  (org-todo-keywords . '((sequence "TODO(t)" "WAIT(w)" "|" "DONE(x)" "SOMEDAY(s)")))
-  (org-log-done . 'time)
-  (org-capture-templates
-   .
-   '(("b" "Add “what I want to do” to the Bucket List" entry
-      (file+headline "bucket-list.org" "Task [/]") "* TODO %?\nEntered on %U")
-     ("R" "Add “to read” to the Reading List" entry
-      (file+headline "bucket-list.org" "Task [/]") "* UNREAD %?\nEntered on %U")
-     ("r" "Add “to read” to the Reading List from a URL" entry
-      (file+headline "reading-list.org" "Task [/]") (function my:org-capture-new-reading-list) :immediate-finish t)
-     ("t" "Add a task to the GTD" entry
-      (file+headline "gtd.org" "Inbox") "* TODO %?\nEntered on %U")
-     ("W" "Add “What I Want” to the Wish List" checkitem
-      (file+headline "wish-list.org" "Task [/]") "* WANT %?\nEntered on %U")
-     ("w" "Add “What I Want” to the Wish List from a URL" checkitem
-      (file+headline "wish-list.org" "Task [/]") (function my:org-capture-new-wish-list) :immediate-finish t)
-     ))
-  :bind (("C-c c" . org-capture)
-         ("C-C a" . org-agenda)
-         ("C-c o" . my:org-open-directory)))
 
 (leaf popwin
   :ensure t
