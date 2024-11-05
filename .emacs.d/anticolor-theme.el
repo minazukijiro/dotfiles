@@ -1,6 +1,31 @@
 (deftheme anticolor
   "anticolor theme")
 
+(when (display-graphic-p)
+  (custom-set-variables
+   '(menu-bar-mode nil)
+   '(tool-bar-mode nil)
+   '(scroll-bar-mode nil)))
+
+(custom-set-variables
+ '(mode-line-format nil)
+ '(header-line-format
+   '("%l,%C  "
+     (:eval
+      (cond
+       ((not (buffer-file-name))
+        (buffer-name))
+       (buffer-read-only
+        (propertize buffer-file-truename 'face 'italic))
+       ((buffer-modified-p)
+        (propertize buffer-file-truename 'face 'bold))
+       (t
+        buffer-file-truename)))
+     skk-modeline-input-mode
+     (:eval
+      (propertize " " 'display `(space :align-to (- right ,(length mode-name)))))
+     mode-name)))
+
 (custom-theme-set-faces
  'anticolor
 
