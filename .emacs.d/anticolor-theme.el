@@ -3,11 +3,11 @@
 
 (when (display-graphic-p)
   (custom-set-variables
-   '(menu-bar-mode nil)
    '(tool-bar-mode nil)
    '(scroll-bar-mode nil)))
 
 (custom-set-variables
+ '(menu-bar-mode nil)
  '(mode-line-format nil)
  '(header-line-format
    '("%l,%C  "
