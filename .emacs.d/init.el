@@ -9,11 +9,10 @@
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36")
 
 (defun www-get-page-title (url)
-  (let* ((url-request-extra-headers '(("User-Agent" . www-get-page-title-user-agent)))
+  (let* ((url-request-extra-headers `(("User-Agent" . ,www-get-page-title-user-agent)))
          (dom (with-current-buffer (url-retrieve-synchronously url)
-                (libxml-parse-html-region url-http-end-of-headers (point-max))))
-         (title (dom-text (dom-by-tag dom 'title))))
-    (replace-regexp-in-string "\\`\\(?:\\s-\\|\n\\)+\\|\\(?:\\s-\\|\n\\)+\\'" "" title)))
+                (libxml-parse-html-region url-http-end-of-headers (point-max)))))
+    (replace-regexp-in-string "\\`\\(?:\\s-\\|\n\\)+\\|\\(?:\\s-\\|\n\\)+\\'" "" (dom-text (dom-by-tag dom 'title)))))
 
 (add-hook
  'after-save-hook
@@ -161,18 +160,6 @@
                           (setq js-indent-level 2))))
 
 (leaf org-mode
-  :preface
-  (defun my:org-capture-new-reading-list ()
-    (let* ((url (read-from-minibuffer "URL: "))
-           (title (www-get-page-title url)))
-      (format "* UNREAD [[%s][%s]]\nEntered on %U" url title)))
-  (defun my:org-capture-new-wish-list ()
-    (let* ((url (read-from-minibuffer "URL: "))
-           (title (www-get-page-title url)))
-      (format "* WANT [[%s][%s]]\nEntered on %U" url title)))
-  (defun my:org-file-list ()
-    (interactive)
-    (directory-files org-directory t "\\.org\\'"))
   :init
   (let ((org-global-file (concat org-directory "/org-global.el")))
     (when (file-exists-p org-global-file)
