@@ -89,6 +89,8 @@
  '(split-width-threshold 0)
  '(system-time-locale "C" t))
 
+(set-language-environment "Japanese")
+
 (load-theme 'anticolor t)
 
 (let ((display-table (or buffer-display-table standard-display-table)))
