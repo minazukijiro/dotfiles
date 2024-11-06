@@ -164,6 +164,8 @@
   (let ((org-global-file (concat org-directory "/org-global.el")))
     (when (file-exists-p org-global-file)
       (load org-global-file)))
+  (defun my:org-file-list ()
+    (directory-files org-directory t "\\.org\\'"))
   :custom
   (org-use-speed-commands . t)
   (org-startup-folded . 'content)
