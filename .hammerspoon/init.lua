@@ -1,29 +1,23 @@
-local tapdance = require 'tapdance'
+local TapDance = require 'tapdance'
 
 function launchOrFocusTerm()
-   -- hs.application.launchOrFocus('Alacritty')
-   hs.application.launchOrFocus('Kitty')
-   -- hs.application.launchOrFocus('Terminal')
+   -- local term = 'Terminal'
+   -- local term = 'Alacritty'
+   local term = 'Kitty'
+   hs.application.launchOrFocus(term)
 end
 
-focusterm = tapdance.new('alt', 2, 200, launchOrFocusTerm)
+local focusterm = TapDance.new('alt', 2, 200, launchOrFocusTerm)
 focusterm.watcher:start()
 
 --
 
--- function moveToNextScreen()
---    local app = hs.window.focusedWindow()
---    app:moveToScreen(app:screen():next())
--- end
+local IM = require 'im'
 
--- movenextscr = tapdance.new('', 2, 200, moveToNextScreen)
--- movenextscr.watcher:start()
+local im = IM.new({
+      Emacs = 'en',
+      Kitty = 'en',
+      Slack = 'ja'
+})
 
---
-
-im = require 'im'
-im.applications = {
-   Alacritty = 'en',
-   kitty = 'en',
-   slack = 'ja',
-}
+im.watcher:start()
