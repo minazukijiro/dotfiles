@@ -138,6 +138,11 @@ dotfiles-auto-commit() {
     )
 }
 
+dotfiles-force-pull() {
+    dotfiles fetch
+    dotfiles reset --hard origin/main
+}
+
 dotfiles-push() {
     dotfiles push origin main
 }
