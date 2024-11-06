@@ -179,7 +179,7 @@
    .
    '(("t" "To Do" entry
       (file+headline "todo.org" "Task")
-      "* TODO [#B] %?\nEntered on %U")
+      "* TODO [#B] %?\n- やりたいこと\n  \nEntered on %U")
      ("p" "Plan" checkitem
       (file+olp+datetree "plan.org")
       "[ ] %?")
