@@ -176,12 +176,20 @@
   (org-log-done . 'time)
   (org-capture-templates
    .
-   '(("t" "Add a task to the GTD" entry
-      (file+headline "gtd.org" "Inbox") "* TODO %?\nEntered on %U")
-     ))
+   '(("t" "To Do" entry
+      (file+headline "todo.org" "Task")
+      "* TODO [#B] %?\nEntered on %U")
+     ("p" "Plan" checkitem
+      (file+olp+datetree "plan.org")
+      "[ ] %?")
+     ("j" "Journal" entry
+      (file+olp+datetree "journal.org")
+      "* 週次レビュー\n- good: %?\n- bad:\n- try:")
+     ("r" "Review" entry
+      (file+olp+datetree "review.org")
+      (file "template-review.org"))))
   :bind (("C-c c" . org-capture)
          ("C-C a" . org-agenda)
-         ;;("C-c o" . my:org-open-directory)))
          ("C-c o" . (lambda ()
                       (interactive)
                       (find-file org-directory)))))
