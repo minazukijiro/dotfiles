@@ -158,6 +158,10 @@ dotfiles-pull() {
     dotfiles reset --hard origin/main
 }
 
+dotfiles-push() {
+    dotfiles push origin main
+}
+
 emacs-or-client() {
     local c=()
     if emacsclient -e '(server-running-p)' >/dev/null 2>&1; then
