@@ -1,3 +1,12 @@
+-- local tapdance = require 'tapdance'
+
+-- function launchOrFocusTerm()
+--    hs.application.launchOrFocus('Terminal')
+-- end
+
+-- focuseterm = tapdance.new('alt', 2, 200, launchOrFocusTerm)
+-- focuseterm.watcher:start()
+
 local timer    = require('hs.timer')
 local eventtap = require('hs.eventtap')
 local events   = eventtap.event.types
