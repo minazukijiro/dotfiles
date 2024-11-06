@@ -91,25 +91,13 @@ dotfiles() {
     git --git-dir ~/.dotfiles --work-tree ~ "$@"
 }
 
-autoload -Uz compinit
-compinit
-
-compdef dotfiles=git
-
-[[ -d ~/.dotfiles ]] || {
-    dotfiles init
-    dotfiles remote add origin git@github.com:minazukijiro/dotfiles.git
-    dotfiles pull origin main
-}
-
 dotfiles-add() {
     dotfiles add "$@"
-    dotfiles-commit "$@"
+    dotfiles commit "$@"
 }
 
-dotfiles-commit() {
-    local v xy f parts  msg commit
-
+dotfiles-auto-commit() {
+    local v xy f parts msg commit
     (
         cd ~
 
@@ -118,8 +106,7 @@ dotfiles-commit() {
 
         while (( $# )); do
             v="$1"
-            xy="$v[1,2]"
-            f="$v[4,-1]"
+            xy="$v[1,2]" f="$v[4,-1]"
             parts=(${(@s/ -> /)f})
             msg= commit=0
             case "$xy" in
@@ -145,34 +132,29 @@ dotfiles-commit() {
                 dotfiles commit -m "$msg" "$parts[@]"
             elif (( $#msg )); then
                 echo dotfiles commit -m "$msg" "$parts[@]"
-                # else
-                #     echo "xy:$xy f:$f"
             fi
             shift
         done
     )
 }
 
-dotfiles-pull() {
-    dotfiles fetch
-    dotfiles reset --hard origin/main
-}
-
 dotfiles-push() {
     dotfiles push origin main
 }
 
-emacs-or-client() {
-    local c=()
-    if emacsclient -e '(server-running-p)' >/dev/null 2>&1; then
-        command emacsclient -t "$@"
-    else
-        command emacs "$@"
-    fi
+autoload -Uz compinit
+compinit
+
+compdef dotfiles=git
+
+[[ -d ~/.dotfiles ]] || {
+    dotfiles init
+    dotfiles remote add origin git@github.com:minazukijiro/dotfiles.git
+    dotfiles pull origin main
 }
 
-alias e='emacs-or-client'
-alias emacs='emacs-or-client'
+alias e='emacsclient -t'
+alias emacs='emacsclient -t'
 export EDITOR=emacsclient
 
 alias grep='grep --color=auto'
