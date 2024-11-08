@@ -175,6 +175,20 @@
   (org-agenda-window-setup . 'current-window)
   (org-todo-keywords . '((sequence "TODO(t)" "WAIT(w)" "|" "DONE(x)" "SOMEDAY(s)")))
   (org-log-done . 'time)
+  ;; (org-agenda-custom-commands
+  ;;  .
+  ;;    ("W" "Weekly review"
+  ;;     agenda ""
+  ;;     ((org-agenda-start-day "-14d")
+  ;;      (org-agenda-span 14)
+  ;;      (org-agenda-start-on-weekday 1)
+  ;;      (org-agenda-start-with-log-mode '(closed))
+  ;;      (org-agenda-archives-mode t)
+  ;;      (org-agenda-skip-function '(org-agenda-skip-entry-if 'notregexp "^\\*\\* DONE "))))
+  ;;    ("n" "Agenda and all TODOs"
+  ;;     agenda ""
+  ;;     ((alltodo "")))
+  ;;    ))
   (org-capture-templates
    .
    '(("t" "To Do" entry
