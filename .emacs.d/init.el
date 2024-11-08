@@ -170,7 +170,7 @@
   (org-use-speed-commands . t)
   (org-startup-folded . 'content)
   (org-directory . "~/org")
-  (org-refile-targets . '((my:org-file-list :maxlevel . 4)))
+  (org-refile-targets . '((my:org-file-list :maxlevel . 2)))
   (org-agenda-files . `(,org-directory))
   (org-agenda-window-setup . 'current-window)
   (org-todo-keywords . '((sequence "TODO(t)" "WAIT(w)" "|" "DONE(x)" "SOMEDAY(s)")))
