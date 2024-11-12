@@ -21,7 +21,7 @@ fpath=(~/.zsh.d/functions(N-/) $fpath)
 
 # If not working
 # echo 'AcceptEnv TMUX' | sudo tee /etc/ssh/sshd_config.d/90-tmux.conf
-if (( $+commands[tmux] && ! $+TMUX && $+SSH_CONNECTION )); then
+if (( $+commands[tmux] && ! $+TMUX && ( $+SSH_CONNECTION || $+TERMUX_VERSION ) )); then
     tmux has && exec tmux attach
     exec tmux new
 fi
@@ -158,9 +158,9 @@ compdef dotfiles=git
     dotfiles pull origin main
 }
 
-alias e='emacsclient -t'
-alias emacs='emacsclient -t'
-export EDITOR=emacsclient
+alias e='emacsclient -a emacs -t'
+alias emacs='emacsclient -a emacs -t'
+export EDITOR=emacs
 
 alias grep='grep --color=auto'
 
