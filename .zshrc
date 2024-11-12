@@ -197,6 +197,7 @@ if (( $+commands[nnn] )); then
 
     if (( $+commands[sshfs] )); then
         export NNN_SSHFS='sshfs -o follow_symlinks,allow_other'
+    fi
 fi
 
 if (( $+commands[pass] )); then
@@ -316,17 +317,8 @@ fi
 
 if (( $+commands[syncthing] )); then
     znap eval syncthing 'syncthing install-completions'
-
 fi
 
 if (( $ZPROF )); then
     zprof
 fi
-
-# pnpm
-export PNPM_HOME="/Users/ttanaka/.local/share/pnpm"
-case ":$PATH:" in
-  *":$PNPM_HOME:"*) ;;
-  *) export PATH="$PNPM_HOME:$PATH" ;;
-esac
-# pnpm end
