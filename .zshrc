@@ -194,10 +194,6 @@ if (( $+commands[nnn] )); then
         export NNN_TRASH=2
         nnn() { command nnn "$@"; gio trash --empty; }
     fi
-
-    if (( $+commands[sshfs] )); then
-        export NNN_SSHFS='sshfs -o follow_symlinks,allow_other'
-    fi
 fi
 
 if (( $+commands[pass] )); then
