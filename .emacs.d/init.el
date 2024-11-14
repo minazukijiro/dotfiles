@@ -337,9 +337,6 @@
 (leaf typescript-mode :ensure t)
 
 (leaf xclip
-  :if (or (executable-find "xclip")
-          (executable-find "xsel")
-          (executable-find "pbcopy"))
   :ensure t
   :global-minor-mode xclip-mode)
 
