@@ -160,7 +160,7 @@ compdef dotfiles=git
 
 alias e='emacsclient -a emacs -t'
 alias emacs='emacsclient -a emacs -t'
-export EDITOR=emacs
+export EDITOR='emacsclient -a emacs -t'
 
 alias grep='grep --color=auto'
 
