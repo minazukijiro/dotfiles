@@ -201,7 +201,10 @@ if (( $+commands[pass] )); then
 fi
 
 if [[ -f ~/.ssh-agent ]]; then
-    . ~/.ssh-agent >/dev/null
+    . ~/.ssh-agent >/dev/null || {
+        unset SSH_AGENT_PID
+        pkill -u $USER ssh-agent >/dev/null 2>&1
+    }
 fi
 
 if [[ -z "$SSH_AGENT_PID" ]] || ! pgrep -q -u $USER ssh-agent; then
