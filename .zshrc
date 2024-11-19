@@ -207,7 +207,8 @@ if [[ -f ~/.ssh-agent ]]; then
     }
 fi
 
-if [[ -z "$SSH_AGENT_PID" ]] || ! pgrep -q -u $USER ssh-agent; then
+if [[ -z "$SSH_AGENT_PID" ]] \
+       || ! pgrep -u $USER ssh-agent >/dev/null; then
     ssh-agent > ~/.ssh-agent
     . ~/.ssh-agent >/dev/null
 fi
