@@ -200,14 +200,14 @@ if (( $+commands[pass] )); then
     export PASSWORD_STORE_ENABLE_EXTENSIONS=true
 fi
 
-[[ -f ~/.ssh-agent-thing ]] \
-    || pkill -u $USER ssh-agent >/dev/null 2>&1
+if [[ -f ~/.ssh-agent ]]; then
+    . ~/.ssh-agent >/dev/null
+fi
 
-pgrep -u $USER ssh-agent >/dev/null 2>&1 \
-    || ssh-agent > ~/.ssh-agent-thing
-
-(( $+SSH_AGENT_PID )) \
-    || eval $(< ~/.ssh-agent-thing) >/dev/null
+if [[ -z "$SSH_AGENT_PID" ]] || ! pgrep -q -u $USER ssh-agent; then
+    ssh-agent > ~/.ssh-agent
+    . ~/.ssh-agent >/dev/null
+fi
 
 ssh-add -l >/dev/null \
     || alias ssh='ssh-add -l >/dev/null || ssh-add && unalias ssh; ssh'
