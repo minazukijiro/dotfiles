@@ -180,6 +180,9 @@ mkcd() { install -Dd "$1" && cd "$1" }
 mkcp() { (( $# > 1 )) && install -Dd "$@[-1]" && cp "$@" }
 mkmv() { (( $# > 1 )) && install -Dd "$@[-1]" && mv "$@" }
 
+alias cp='cp -v'
+alias mv='mv -v'
+
 if (( $+commands[nnn] )); then
     export NNN_OPTS='aBdfoS'
     export NNN_PLUG='f:finder;e:trash-empty'
