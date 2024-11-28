@@ -97,68 +97,9 @@ compdef dotfiles=git
 [[ -d ~/.dotfiles ]] || {
     dotfiles init
     dotfiles remote add origin https://github.com/minazukijiro/dotfiles.git
-    dotfiles pull origin main
+    dotfiles fetch
+    dotfiles reset --hard origin/main
 }
-
-# dotfiles() {
-#     git --git-dir ~/.dotfiles --work-tree ~ "$@"
-# }
-
-# dotfiles-add() {
-#     dotfiles add "$@"
-#     dotfiles commit "$@"
-# }
-
-# dotfiles-auto-commit() {
-#     local v xy f parts msg commit
-#     (
-#         cd ~
-
-#         IFS=$'\n'
-#         set -- $(dotfiles status -s -uno)
-
-#         while (( $# )); do
-#             v="$1"
-#             xy="$v[1,2]" f="$v[4,-1]"
-#             parts=(${(@s/ -> /)f})
-#             msg= commit=0
-#             case "$xy" in
-#                 M[' 'MD]  ) commit=1 msg="update $f" ;;
-#                 A[' 'MD]  ) commit=1 msg="add $f" ;;
-#                 D' '      ) commit=0 msg='deleted from index' ;;
-#                 R[' 'MD]  ) commit=1 msg="renamed $f" ;;
-#                 C[' 'MD]  ) commit=0 msg='copied in index' ;;
-#                 [MARC]' ' ) commit=0 msg='index and work tree matches' ;;
-#                 [' 'MARC]M) commit=1 msg="update $f" ;;
-#                 [' 'MARC]D) commit=1 msg='deleted in work tree' ;;
-#                 [' 'D]R   ) commit=0 msg='renamed in work tree' ;;
-#                 [' 'D]C   ) commit=0 msg='copied in work tree' ;;
-#                 DD        ) commit=0 msg='unmerged, both deleted' ;;
-#                 AU        ) commit=0 msg='unmerged, added by us' ;;
-#                 UD        ) commit=0 msg='unmerged, deleted by them' ;;
-#                 UA        ) commit=0 msg='unmerged, added by them' ;;
-#                 DU        ) commit=0 msg='unmerged, deleted by us' ;;
-#                 AA        ) commit=0 msg='unmerged, both added' ;;
-#                 UU        ) commit=0 msg='unmerged, both modified' ;;
-#             esac
-#             if (( $commit )); then
-#                 dotfiles commit -m "$msg" "$parts[@]"
-#             elif (( $#msg )); then
-#                 echo dotfiles commit -m "$msg" "$parts[@]"
-#             fi
-#             shift
-#         done
-#     )
-# }
-
-# dotfiles-force-pull() {
-#     dotfiles fetch
-#     dotfiles reset --hard origin/main
-# }
-
-# dotfiles-push() {
-#     dotfiles push origin main
-# }
 
 alias e='emacsclient -a emacs -t'
 alias emacs='emacsclient -a emacs -t'
