@@ -169,13 +169,10 @@
   (let ((org-global-file (concat org-directory "/org-global.el")))
     (when (file-exists-p org-global-file)
       (load org-global-file)))
-  (defun my:org-file-list ()
-    (directory-files org-directory t "\\.org\\'"))
   :custom
   (org-use-speed-commands . t)
   (org-startup-folded . 'content)
   (org-directory . "~/org")
-  (org-refile-targets . '((my:org-file-list :maxlevel . 1)))
   (org-agenda-files . `(,org-directory))
   (org-agenda-window-setup . 'current-window)
   (org-todo-keywords . '((sequence "TODO(t)" "WAIT(w)" "|" "DONE(x)" "SOMEDAY(s)")))
@@ -194,32 +191,6 @@
        (org-agenda-start-with-log-mode '(closed))
        (org-agenda-archives-mode t)
        (org-agenda-skip-function '(org-agenda-skip-entry-if 'notregexp "^\\*\\* DONE "))))))
-
-
-
-  ;; (org-agenda-custom-commands
-  ;;  .
-  ;;  '(("n" "Agenda and all TODOs"
-  ;;     ((agenda "" nil)
-  ;;      (alltodo "" nil))
-  ;;     nil)
-  ;;    ("d" "Daily review"
-  ;;     ((agenda "" nil))
-  ;;      nil)
-  (org-capture-templates
-   .
-   '(("t" "To Do" entry
-      (file+headline "todo.org" "Task")
-      "* TODO [#B] %?\n- やりたいこと\n  \nEntered on %U")
-     ("p" "Plan" checkitem
-      (file+olp+datetree "plan.org")
-      "[ ] %?")
-     ("j" "Journal" entry
-      (file+olp+datetree "journal.org")
-      "* 週次レビュー\n- good: %?\n- bad:\n- try:")
-     ("r" "Review" entry
-      (file+olp+datetree "review.org")
-      (file "template-review.org"))))
   :bind (("C-c c" . org-capture)
          ("C-C a" . org-agenda)
          ("C-c o" . (lambda ()
