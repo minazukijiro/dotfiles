@@ -109,13 +109,13 @@ alias grep='grep --color=auto'
 
 export GPG_TTY=$(tty)
 
-unset SSH_AGENT_PID
-if [[ "${gnupg_SSH_AUTH_SOCK_by:-0}" != $$ ]]; then
-    export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
-fi
+# unset SSH_AGENT_PID
+# if [[ "${gnupg_SSH_AUTH_SOCK_by:-0}" != $$ ]]; then
+#     export SSH_AUTH_SOCK="$(gpgconf --list-dirs agent-ssh-socket)"
+# fi
 
-ssh-add -l >/dev/null \
-    || alias ssh='ssh-add -l >/dev/null || ssh-add && unalias ssh; ssh'
+# ssh-add -l >/dev/null \
+#     || alias ssh='ssh-add -l >/dev/null || ssh-add && unalias ssh; ssh'
 
 export LESS='-RS'
 
