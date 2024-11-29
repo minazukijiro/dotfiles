@@ -109,6 +109,12 @@ alias grep='grep --color=auto'
 
 export GPG_TTY=$(tty)
 
+unset SSH_AGENT_PID
+export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
+
+ssh-add -l >/dev/null \
+    || alias ssh='ssh-add -l >/dev/null || ssh-add && unalias ssh; ssh'
+
 export LESS='-RS'
 
 if (( $+commands[lesspipe.sh] )); then
@@ -145,22 +151,6 @@ fi
 if (( $+commands[pass] )); then
     export PASSWORD_STORE_ENABLE_EXTENSIONS=true
 fi
-
-if [[ -f ~/.ssh-agent ]]; then
-    . ~/.ssh-agent >/dev/null || {
-        unset SSH_AGENT_PID
-        pkill -u $USER ssh-agent >/dev/null 2>&1
-    }
-fi
-
-if [[ -z "$SSH_AGENT_PID" ]] \
-       || ! pgrep -u $USER ssh-agent >/dev/null; then
-    ssh-agent > ~/.ssh-agent
-    . ~/.ssh-agent >/dev/null
-fi
-
-ssh-add -l >/dev/null \
-    || alias ssh='ssh-add -l >/dev/null || ssh-add && unalias ssh; ssh'
 
 # znap
 () {
