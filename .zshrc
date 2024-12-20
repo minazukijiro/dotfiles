@@ -184,6 +184,9 @@ znap source zsh-users/zsh-syntax-highlighting
 
 znap source sorin-ionescu/prezto modules/{command-not-found,completion}
 
+znap source asdf-vm/asdf asdf.sh
+fpath+=(~[asdf]/completions)
+
 () {
     local src zwc
     while (( $# )); do
