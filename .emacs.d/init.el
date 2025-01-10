@@ -3,7 +3,18 @@
   (unless (server-running-p)
     (server-start))
 
-  (setq confirm-kill-emacs 'yes-or-no-p))
+  (setq confirm-kill-emacs 'yes-or-no-p)
+
+  (custom-set-faces
+   '(default ((t (:foundry "0xProto" :family "0xProto")))))
+
+  (set-fontset-font
+   t
+   'japanese-jisx0208
+   (font-spec :family "Noto Sans CJK JP"))
+
+  (set-language-environment "Japanese")
+  )
 
 (defvar www-get-page-title-user-agent
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36")
@@ -94,13 +105,6 @@
  '(show-paren-mode t)
  '(split-width-threshold 0)
  '(system-time-locale "C" t))
-
-(custom-set-faces
- '(default ((t (:foundry "0xProto" :family "0xProto")))))
-
-(set-fontset-font t 'japanese-jisx0208 (font-spec :family "Noto Sans CJK JP"))
-
-(set-language-environment "Japanese")
 
 (load-theme 'anticolor t)
 
