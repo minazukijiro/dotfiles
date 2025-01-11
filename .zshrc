@@ -21,7 +21,7 @@ fpath=(~/.zsh.d/functions(N-/) $fpath)
 
 # If not working
 # echo 'AcceptEnv TMUX' | sudo tee /etc/ssh/sshd_config.d/90-tmux.conf
-if (( $+commands[tmux] && ! $+TMUX && ( $+SSH_CONNECTION || $+TERMUX_VERSION ) )); then
+if (( $+commands[tmux] && ! $+TMUX && $+SSH_CONNECTION )); then
     tmux has && exec tmux attach
     exec tmux new
 fi
