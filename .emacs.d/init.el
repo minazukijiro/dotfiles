@@ -19,18 +19,15 @@
 (defvar www-get-page-title-user-agent
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36")
 
-;; (defun www-get-page-title (url)
-;;   (let* ((url-request-extra-headers `(("User-Agent" . ,www-get-page-title-user-agent)))
-;;          (dom (with-current-buffer (url-retrieve-synchronously url)
-;;                 (libxml-parse-html-region url-http-end-of-headers (point-max))))
-;;          (title (dom-text (dom-by-tag dom 'title))))
-;;     (replace-regexp-in-string "\\`\s+" "" (replace-regexp-in-string "\\(\s+\\|\n\\)" " " title))))
-
 (defun www-get-page-title (url)
-  (let* ((url-request-extra-headers `(("User-Agent" . ,www-get-page-title-user-agent)))
-         (dom (with-current-buffer (url-retrieve-synchronously url)
-                (libxml-parse-html-region url-http-end-of-headers (point-max)))))
-    (replace-regexp-in-string "\\`\s+" "" (replace-regexp-in-string "\\(\s+\\|\n\\)" " " (dom-text (dom-by-tag dom 'title))))))
+  (let ((url-request-method "GET")
+        (url-automatic-caching t)
+        (url-request-extra-headers `(("User-Agent" . ,www-get-page-title-user-agent))))
+    (with-current-buffer (url-retrieve-synchronously url)
+      (let* ((dom (libxml-parse-html-region url-http-end-of-headers (point-max)))
+             (title (dom-text (dom-by-tag dom 'title)))
+             (coding (detect-coding-string title 'utf-8)))
+        (replace-regexp-in-string "\\(\s+\\|\n\\)" "" (decode-coding-string title coding))))))
 
 (add-hook
  'after-save-hook
