@@ -129,6 +129,20 @@ mkcd() { install -Dd "$1" && cd "$1" }
 mkcp() { (( $# > 1 )) && install -Dd "$@[-1]" && cp "$@" }
 mkmv() { (( $# > 1 )) && install -Dd "$@[-1]" && mv "$@" }
 
+urlencode() {
+    LC_COLLATE=C
+    local l=$#1 i c
+    for (( i = 0; i <= l; i++ )); do
+        c="${1:$i:1}"
+        case "$c" in
+            [a-zA-Z0-9.~_-]) printf '%c' "$c" ;;
+            *) printf '%%%02X' "'$c" ;;
+        esac
+    done
+}
+
+urldecode() { : "${*//+/ }"; echo -e "${_//\%/\\x}" }
+
 alias cp='cp -v'
 alias mv='mv -v'
 
