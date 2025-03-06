@@ -191,6 +191,13 @@
       ((agenda "" nil)
        (alltodo "" nil))
       nil)
+     ("d" "Daily review"
+      agenda ""
+      ((org-agenda-start-day "1d")
+       (org-agenda-span 1)
+       ;; (org-agenda-start-with-log-mode '(closed))
+       (org-agenda-archives-mode t)))
+       ;;(org-agenda-skip-function '(org-agenda-skip-entry-if 'notregexp "^\\*\\* DONE "))))
      ("w" "Weekly review"
       agenda ""
       ((org-agenda-start-day "-7d")

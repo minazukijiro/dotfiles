@@ -103,7 +103,6 @@ compdef dotfiles=git
 
 alias e='emacsclient -a emacs -t'
 alias emacs='emacsclient -a emacs -t'
-export EDITOR='emacsclient -a emacs -t'
 
 alias grep='grep --color=auto'
 
@@ -142,6 +141,8 @@ urlencode() {
 }
 
 urldecode() { : "${*//+/ }"; echo -e "${_//\%/\\x}" }
+
+export EDITOR='vi'
 
 alias cp='cp -v'
 alias mv='mv -v'
@@ -269,9 +270,22 @@ if (( $+commands[gh] )); then
     znap fpath _gh 'gh completion -s zsh'
 fi
 
-
 if (( $+commands[syncthing] )); then
     znap eval syncthing 'syncthing install-completions'
+fi
+
+if (( $+commands[cargo] )); then
+    path+=(~/.cargo/bin(N-/))
+fi
+
+if (( $+commands[gcloud] )); then
+    if (( $+commands[mise] )); then
+        source ~/.local/share/mise/installs/gcloud/latest/completion.zsh.inc
+    fi
+fi
+
+if (( $+commands[clusteradm] )); then
+    znap eval clusteradm 'clusteradm completion zsh'
 fi
 
 if (( $ZPROF )); then
