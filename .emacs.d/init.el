@@ -268,16 +268,16 @@
 
 (leaf editorconfig :ensure t)
 
-(leaf flycheck
-  :ensure t
-  :bind (("M-n" . flycheck-next-error)
-         ("M-p" . flycheck-previous-error))
-  :custom
-  (flycheck-display-errors-delay . 0.3)
-  (flycheck-disabled-checkers . '(emacs-lisp-checkdoc))
-  :config
-  (leaf flycheck-inline :ensure t :hook (flycheck-mode-hook . flycheck-inline-mode))
-  :global-minor-mode global-flycheck-mode)
+;; (leaf flycheck
+;;   :ensure t
+;;   :bind (("M-n" . flycheck-next-error)
+;;          ("M-p" . flycheck-previous-error))
+;;   :custom
+;;   (flycheck-display-errors-delay . 0.3)
+;;   (flycheck-disabled-checkers . '(emacs-lisp-checkdoc))
+;;   :config
+;;   (leaf flycheck-inline :ensure t :hook (flycheck-mode-hook . flycheck-inline-mode))
+;;   :global-minor-mode global-flycheck-mode)
 
 (leaf folding :ensure t)
 

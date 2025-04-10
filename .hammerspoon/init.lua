@@ -1,4 +1,6 @@
-hs.hotkey.bind({'cmd', 'shift'}, 'Return', function() hs.application.open('Kitty') end)
+-- local term = 'Alacritty'
+local term = 'Kitty'
+hs.hotkey.bind({'cmd', 'shift'}, 'Return', function() hs.application.open(term) end)
 
 ---
 
@@ -26,13 +28,6 @@ end
 
 local focusterm = TapDance.new('alt', 2, 200, launchOrFocusTerm)
 focusterm.watcher:start()
-
--- function launchOrFocusEmacs()
---    hs.application.launchOrFocus('Emacs')
--- end
-
--- local focusemacs = TapDance.new('ctrl', 2, 200, launchOrFocusEmacs)
--- focusemacs.watcher:start()
 
 --
 

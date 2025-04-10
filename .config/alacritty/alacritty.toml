@@ -12,7 +12,7 @@ history = 100000
 
 [font]
 normal = { family = "0xProto", style = "Regular" }
-#size   = 18                     #for retina
+#size   = 18                     # for retina
 
 [colors.primary]
 background = "#21084a"
@@ -59,13 +59,20 @@ save_to_clipboard = false
 style = { shape = "Beam", blinking = "Never" }
 
 [mouse]
-hide_when_typing = true
+#hide_when_typing = true
+
+[hints]
+enabled = [
+  # { <regex>, <hyperlinks>, <post_processing>, <persist>, <action>, <command>, <binding>, <mouse> }
+  #{ hyperlinks = true, post_processing = true, persist = true, command = "open", binding = { key = "o", mods = "control|shift" }, mouse.enabled = false },
+  { regex = "https?://[^ ]*", post_processing = true, persist = true, command = "open", binding = { key = "o", mods = "control|shift" }, mouse.enabled = false },
+  { regex = "[a-z0-9]{40}", action = "Copy", binding = { key = "h", mods = "control|shift" }, mouse.enabled = false }
+]
 
 [keyboard]
 bindings = [
-  { mods = "control",       key = "T",      chars = "`c"  },
-  { mods = "command",       key = "T",      chars = "`c"  },
-  { mods = "control",       key = "Tab",    chars = "`n"  },
-  { mods = "control|shift", key = "Tab",    chars = "`p"  },
-  { mods = "command",       key = "Return", chars = "`\"" },
+  # { <key>, <mods>, <mode>, <command> | <chars> | <action> }
+  { key = "T",      mods = "command", action = "CreateNewWindow" },
+  { key = "T",      mods = "control", action = "CreateNewWindow" },
+  { key = "Return", mods = "command", action = "CreateNewWindow" },
 ]
