@@ -1,3 +1,8 @@
+if (( ${DEBUG:-0} )); then
+    ZPROF=1
+    set -x
+fi
+
 if (( ${ZPROF:-0} )); then
     zmodload zsh/zprof; zprof
 fi
@@ -42,6 +47,7 @@ bindkey f forward-word
 
 : completion
 
+setopt ALWAYS_TO_END
 setopt COMPLETE_ALIASES
 setopt COMPLETE_IN_WORD
 setopt GLOB_COMPLETE
@@ -194,7 +200,7 @@ znap source zsh-users/zaw
 
 znap source zsh-users/zsh-autosuggestions
 
-znap source zsh-users/zsh-completions
+znap install zsh-users/zsh-completions
 
 # znap source zsh-users/zsh-history-substring-search
 # bindkey  history-substring-search-up
@@ -203,6 +209,13 @@ znap source zsh-users/zsh-completions
 znap source zsh-users/zsh-syntax-highlighting
 
 #znap source sorin-ionescu/prezto modules/{command-not-found,completion}
+
+if (( ! $+commands[asdf] )); then
+    curl -fsL https://github.com/asdf-vm/asdf/releases/download/v0.16.7/asdf-v0.16.7-$(uname -s | tr A-Z a-z)-$(arch).tar.gz | tar xzf - -C ~/bin asdf
+fi
+
+znap fpath _asdf 'command asdf completion zsh'
+path=(${ASDF_DATA_DIR:-$HOME/.asdf}/shims $path)
 
 : load other files
 
@@ -270,5 +283,6 @@ if (( $+commands[cargo] )); then
 fi
 
 if (( $ZPROF )); then
+    set +x
     zprof
 fi

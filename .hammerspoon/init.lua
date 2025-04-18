@@ -1,5 +1,5 @@
--- local term = 'Alacritty'
-local term = 'Kitty'
+local term = 'Alacritty'
+-- local term = 'Kitty'
 hs.hotkey.bind({'cmd', 'shift'}, 'Return', function() hs.application.open(term) end)
 
 ---
