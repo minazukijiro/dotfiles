@@ -210,7 +210,9 @@
          ("C-C a" . org-agenda)
          ("C-c o" . (lambda ()
                       (interactive)
-                      (find-file org-directory)))))
+                      (find-file org-directory))))
+  :config
+  (leaf orgtbl-aggregate :ensure t))
 
 (leaf whitespace
   :hook
