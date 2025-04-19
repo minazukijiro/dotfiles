@@ -52,6 +52,7 @@ bindkey f forward-word
 : glob
 
 setopt EXTENDED_GLOB
+setopt NULL_GLOB
 
 : history
 
@@ -124,6 +125,7 @@ znap source sorin-ionescu/prezto modules/{command-not-found,completion}
 
 () {
     local src=$1 zwc=$1.zwc
+    [[ -n $src ]] || return 0
     if [[ ! -f $zwc || $src -nt $zwc ]]; then
         zcompile $src
     fi
