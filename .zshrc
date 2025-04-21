@@ -143,6 +143,7 @@ compdef dotfiles=git
 if [[ ! -d "$DOTFILES_GIT_DIR" ]]; then
     dotfiles init
     dotfiles remote add origin https://github.com/minazukijiro/dotfiles.git
+    dotfiles branch --set-upstream-to=origin/main main
     dotfiles fetch
     dotfiles reset --hard origin/main
 fi
