@@ -114,24 +114,6 @@ znap source zsh-users/zsh-syntax-highlighting
 
 znap source sorin-ionescu/prezto modules/{command-not-found,completion}
 
-#if (( ! $+commands[asdf] )); then
-#    curl -fsL https://github.com/asdf-vm/asdf/releases/download/v0.16.7/asdf-v0.16.7-$(uname -s | tr A-Z a-z)-$(arch).tar.gz | tar xzf - -C ~/bin asdf
-#fi
-
-#znap fpath _asdf 'command asdf completion zsh'
-#path=(${ASDF_DATA_DIR:-$HOME/.asdf}/shims $path)
-
-: load other files
-
-() {
-    local src=$1 zwc=$1.zwc
-    [[ -n $src ]] || return 0
-    if [[ ! -f $zwc || $src -nt $zwc ]]; then
-        zcompile $src
-    fi
-    source $src
-} ~/.zshrc.*~*.zwc~*\~
-
 : function and alias
 
 export DOTFILES_GIT_DIR=~/.dotfiles
@@ -187,6 +169,17 @@ fi
 if (( $+commands[cargo] )); then
     path+=(~/.cargo/bin(N-/))
 fi
+
+: load other files
+
+() {
+    local src=$1 zwc=$1.zwc
+    [[ -n $src ]] || return 0
+    if [[ ! -f $zwc || $src -nt $zwc ]]; then
+        zcompile $src
+    fi
+    source $src
+} ~/.zshrc.*~*.zwc~*\~
 
 if (( $ZPROF )); then
     set +x
