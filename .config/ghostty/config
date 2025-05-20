@@ -6,6 +6,9 @@ font-size = 12
 background = #21084a
 foreground = #fffbf6
 
+selection-background = #287690
+selection-foreground = #ffffff
+
 palette = 0=#000000
 palette = 1=#ff260e
 palette = 2=#9be205
@@ -26,14 +29,11 @@ palette = 15=#ffffff
 cursor-color = #ff271d
 cursor-text = #ff271d
 
-selection-background = #287690
-selection-foreground = #ffffff
-
 cursor-style = bar
 cursor-style-blink = false
 
 title = " "
-window-subtitle = false
+macos-titlebar-proxy-icon = hidden
 
 window-padding-x = 10
 window-padding-y = 10
@@ -52,4 +52,4 @@ quick-terminal-screen = mouse
 quick-terminal-animation-duration = 0.1
 quick-terminal-autohide = true
 
-keybind = global:super+enter=toggle_quick_terminal
+keybind = global:super+j=toggle_quick_terminal

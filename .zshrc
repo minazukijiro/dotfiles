@@ -34,7 +34,6 @@ path+=(~/bin(N-/) ~/.local/bin(N-/))
 
 typeset -U cdpath
 cdpath+=(~)
-:
 
 if [[ "$TERM" == 'linux' ]]; then
     return 0
@@ -79,6 +78,13 @@ bindkey  history-incremental-pattern-search-backward
 bindkey  history-incremental-pattern-search-forward
 bindkey  history-beginning-search-backward
 bindkey  history-beginning-search-forward
+
+:
+
+autoload -Uz select-word-style
+select-word-style default
+zstyle ':zle:*' word-chars ' /=;@:{}[]()<>,|.'
+zstyle ':zle:*' word-style unspecified
 
 : znap
 
